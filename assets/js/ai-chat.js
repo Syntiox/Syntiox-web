@@ -4,7 +4,7 @@ const chatInput = document.getElementById("chat-input");
 const sendBtn = document.getElementById("send-btn");
 const resizer = document.getElementById("resizer");
 // 1️⃣ API URL එක මෙතන (ඔයාගේ python කෝඩ් එකේ තිබ්බ එක)
-const API_URL = "https://kakavindu16-syntioxai1.hf.space/generate";
+const API_URL = "/api/chat";
 let chatHistory = [];
 let abortController = null;
 // --- Chat Window Resizer Logic ---
