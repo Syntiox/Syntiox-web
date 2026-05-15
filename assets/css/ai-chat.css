@@ -494,3 +494,12 @@
     height: 14px;
     fill: currentColor;
 }
+
+/* KaTeX Math Overflow Fix */
+.katex-display {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 5px;
+    max-width: 100%;
+}
+
