@@ -238,6 +238,12 @@ async function sendMessage() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 }
+
+// Register KaTeX extension for marked if available
+if (typeof marked !== 'undefined' && typeof markedKatex !== 'undefined') {
+  marked.use(markedKatex({ throwOnError: false }));
+}
+
 function escapeHTML(text) {
   return text
     .replace(/&/g, "&amp;")
