@@ -18,7 +18,7 @@ export async function onRequest(context) {
     }
 
     // Proxy the request to Hugging Face Space securely
-    const response = await fetch("https://kakavindu16-syntioxai3.hf.space/generate", {
+    const response = await fetch("https://kakavindu16-syntioxai1.hf.space/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
