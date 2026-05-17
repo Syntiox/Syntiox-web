@@ -422,21 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
         galleryGrid.innerHTML = galleryHTML;
     }
 
-    // 3. Render Team Marquee
-    if (typeof syntioxData !== 'undefined' && syntioxData.team) {
-        const teamHTMLArray = syntioxData.team.map((member) => `
-            <a href="${member.link || '#'}" target="_blank" class="team-card" draggable="false">
-                <div class="team-img-wrapper" style="pointer-events: none;">
-                    <img src="${member.image}" alt="${member.name}" class="team-img" loading="lazy">
-                </div>
-                <div class="team-info" style="pointer-events: none;">
-                    <h3 class="team-name">${member.name}</h3>
-                    <p class="team-role">${member.role}</p>
-                </div>
-            </a>
-        `);
-        initMarquee('team-marquee', teamHTMLArray, false);
-    }
+
 
     // Re-trigger reveal animation for newly injected items
     revealElements = document.querySelectorAll('.reveal');
