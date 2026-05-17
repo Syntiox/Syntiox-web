@@ -7,32 +7,125 @@ const resizer = document.getElementById("resizer");
 const API_URL = "/api/chat";
 let chatHistory = [];
 let abortController = null;
-// --- Chat Window Resizer Logic ---
+// ----- Resizer Logic (Height + Width, Mouse + Touch) -----
+const resizerLeft = document.getElementById("resizer-left");
 let isResizing = false;
-let startY;
-let startHeight;
-resizer.addEventListener("mousedown", (e) => {
+let isResizingWidth = false;
+let startY, startX, startHeight, startWidth, startRight;
+
+// --- Height Resizer (top edge) ---
+function startHeightResize(clientY) {
   isResizing = true;
-  startY = e.clientY;
-  startHeight = parseInt(
-    document.defaultView.getComputedStyle(chatWindow).height,
-    10,
-  );
-  e.preventDefault(); // Prevent text selection while dragging
+  startY = clientY;
+  startHeight = parseInt(document.defaultView.getComputedStyle(chatWindow).height, 10);
+}
+resizer.addEventListener("mousedown", (e) => {
+  startHeightResize(e.clientY);
+  e.preventDefault();
 });
-document.addEventListener("mousemove", (e) => {
-  if (!isResizing) return;
-  const diff = startY - e.clientY;
-  const newHeight = startHeight + diff;
-  // Set boundaries for resizing
-  if (newHeight >= 400 && newHeight <= window.innerHeight * 0.85) {
-    chatWindow.style.height = newHeight + "px";
+resizer.addEventListener("touchstart", (e) => {
+  startHeightResize(e.touches[0].clientY);
+  e.preventDefault();
+}, { passive: false });
+
+// --- Width Resizer (left edge) ---
+function startWidthResize(clientX) {
+  isResizingWidth = true;
+  startX = clientX;
+  startWidth = parseInt(document.defaultView.getComputedStyle(chatWindow).width, 10);
+}
+if (resizerLeft) {
+  resizerLeft.addEventListener("mousedown", (e) => {
+    startWidthResize(e.clientX);
+    e.preventDefault();
+  });
+  resizerLeft.addEventListener("touchstart", (e) => {
+    startWidthResize(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
+}
+
+// --- Corner Resizer (bottom-right, resizes both height & width) ---
+const resizerCorner = document.getElementById("resizer-corner");
+let isResizingCorner = false;
+
+function startCornerResize(clientX, clientY) {
+  isResizingCorner = true;
+  startX = clientX;
+  startY = clientY;
+  startHeight = parseInt(document.defaultView.getComputedStyle(chatWindow).height, 10);
+  startWidth = parseInt(document.defaultView.getComputedStyle(chatWindow).width, 10);
+  startRight = parseInt(document.defaultView.getComputedStyle(chatWindow).right, 10) || 30;
+}
+if (resizerCorner) {
+  resizerCorner.addEventListener("mousedown", (e) => {
+    startCornerResize(e.clientX, e.clientY);
+    e.preventDefault();
+  });
+  resizerCorner.addEventListener("touchstart", (e) => {
+    startCornerResize(e.touches[0].clientX, e.touches[0].clientY);
+    e.preventDefault();
+  }, { passive: false });
+}
+
+// --- Move Handlers ---
+function onMove(clientX, clientY) {
+  if (isResizing) {
+    const diff = startY - clientY;
+    const newHeight = startHeight + diff;
+    const minH = window.innerWidth <= 768 ? 250 : 400;
+    const maxH = window.innerHeight * 0.9;
+    if (newHeight >= minH && newHeight <= maxH) {
+      chatWindow.style.height = newHeight + "px";
+    }
   }
-});
-document.addEventListener("mouseup", () => {
+  if (isResizingWidth) {
+    const diff = clientX - startX;
+    const newWidth = startWidth + diff;
+    const minW = 260;
+    const maxW = window.innerWidth * 0.95;
+    if (newWidth >= minW && newWidth <= maxW) {
+      chatWindow.style.width = newWidth + "px";
+    }
+  }
+  if (isResizingCorner) {
+    // Height: drag UP = taller (startY - clientY)
+    const hDiff = startY - clientY;
+    const newHeight = startHeight + hDiff;
+    const minH = window.innerWidth <= 768 ? 250 : 400;
+    const maxH = window.innerHeight * 0.9;
+    if (newHeight >= minH && newHeight <= maxH) {
+      chatWindow.style.height = newHeight + "px";
+    }
+    // Width: drag RIGHT → right edge moves right, left edge stays fixed
+    // Achieved by: decreasing 'right' + increasing 'width' by same amount
+    const wDiff = clientX - startX;
+    const newRight = startRight - wDiff;
+    const newWidth = startWidth + wDiff;
+    const minW = 260;
+    const maxW = window.innerWidth * 0.95;
+    if (newWidth >= minW && newWidth <= maxW && newRight >= 0) {
+      chatWindow.style.right = newRight + "px";
+      chatWindow.style.width = newWidth + "px";
+    }
+  }
+}
+document.addEventListener("mousemove", (e) => onMove(e.clientX, e.clientY));
+document.addEventListener("touchmove", (e) => {
+  if (isResizing || isResizingWidth) {
+    onMove(e.touches[0].clientX, e.touches[0].clientY);
+    e.preventDefault();
+  }
+}, { passive: false });
+
+function stopResize() {
   isResizing = false;
-});
-// ---------------------------------
+  isResizingWidth = false;
+  isResizingCorner = false;
+}
+document.addEventListener("mouseup", stopResize);
+document.addEventListener("touchend", stopResize);
+// --------------------------------------------------
 function toggleChat() {
   if (chatWindow.classList.contains("show")) {
     chatWindow.classList.remove("show");
