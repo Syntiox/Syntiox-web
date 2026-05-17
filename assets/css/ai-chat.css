@@ -503,3 +503,30 @@
     max-width: 100%;
 }
 
+/* Mobile Responsive Chat */
+@media (max-width: 768px) {
+    #chat-btn {
+        bottom: 20px;
+        right: 20px;
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+    }
+
+    #chat-window {
+        bottom: 85px;
+        right: 15px;
+        left: 15px;
+        width: auto;
+        height: calc(100vh - 120px);
+        max-width: none;
+        max-height: none;
+        min-width: 0;
+        border-radius: 12px;
+    }
+    
+    .message {
+        max-width: 90%;
+    }
+}
+
