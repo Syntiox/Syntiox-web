@@ -405,20 +405,15 @@ h1, h2, h3, .logo-text {
     margin-bottom: 0 !important;
     color: var(--text-muted) !important;
     font-weight: 400;
-    text-align: left !important;
 }
 
 .glass-pane {
     width: 320px;
     height: 320px;
-    background: #f8f9fa;
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.04);
 }
 
 /* Inner highlight removed */
@@ -709,6 +704,128 @@ h1, h2, h3, .logo-text {
     font-weight: 500;
 }
 
+/* Community Section */
+#community {
+    background: var(--bg-dark);
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--border-color);
+}
+
+.community-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.community-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 2rem;
+    border-radius: 16px;
+    transition: all 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.community-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.community-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--border-color);
+    transition: background 0.4s ease;
+}
+
+.community-card:hover::before {
+    background: var(--accent-gradient);
+}
+
+.community-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    color: #fff;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.whatsapp-icon { background: linear-gradient(135deg, #25D366, #128C7E); }
+.github-icon { background: linear-gradient(135deg, #333, #000); }
+.youtube-icon { background: linear-gradient(135deg, #FF0000, #CC0000); }
+.discord-icon { background: linear-gradient(135deg, #5865F2, #4752C4); }
+
+.community-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.community-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.community-header h3 {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+.community-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.badge-active {
+    background: rgba(37, 211, 102, 0.1);
+    color: #128C7E;
+}
+
+.badge-org {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.badge-video {
+    background: rgba(255, 0, 0, 0.08);
+    color: #CC0000;
+}
+
+.badge-future {
+    background: rgba(88, 101, 242, 0.1);
+    color: #5865F2;
+}
+
+.community-content p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
 /* Contact Section */
 #contact {
     background: var(--bg-panel);
@@ -849,7 +966,13 @@ footer {
     .hero-title { font-size: 3.5rem; }
     .about-content { grid-template-columns: 1fr; }
     .about-text .section-title { text-align: center; }
-    .about-text p { text-align: center; }
+    .about-text p, .mission-statement p { text-align: center; }
+    .mission-statement { 
+        text-align: center; 
+        border-left: none; 
+        border-top: 4px solid var(--accent-primary); 
+        border-radius: 12px;
+    }
     .contact-wrapper {
         grid-template-columns: 1fr;
         padding: 2rem;
@@ -876,12 +999,32 @@ footer {
     .hero-title { font-size: 2.8rem; }
     .section-title { font-size: 2rem; }
     .section-subtitle { font-size: 1rem; }
-    .project-card {
-        min-width: 240px;
-        max-width: 240px;
-        padding: 1.2rem;
+    .section-container {
+        padding: 80px 1.5rem;
     }
-    .project-title { font-size: 1.2rem; }
+    .service-card {
+        text-align: center;
+        align-items: center;
+    }
+    .card-icon {
+        margin: 0 auto;
+    }
+    .project-card {
+        min-width: 280px;
+        max-width: 280px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    .project-header {
+        flex-direction: column;
+        justify-content: center;
+    }
+    .tech-stack {
+        justify-content: center;
+    }
+    .project-link {
+        justify-content: center;
+    }
     .team-card {
         min-width: 160px;
         padding: 1rem;
@@ -901,6 +1044,20 @@ footer {
         gap: 1rem;
         padding-bottom: 2rem;
         scrollbar-width: none;
+    }
+    .community-grid {
+        grid-template-columns: 1fr;
+    }
+    .community-card {
+        text-align: center;
+        align-items: center;
+    }
+    .community-header {
+        justify-content: center;
+        flex-direction: column;
+    }
+    .community-badge {
+        margin-top: 0.5rem;
     }
     .gallery-grid::-webkit-scrollbar { display: none; }
     .gallery-item {
