@@ -67,6 +67,38 @@
     z-index: 1001;
 }
 
+#resizer-left {
+    width: 8px;
+    background-color: transparent;
+    cursor: ew-resize;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1001;
+}
+
+#resizer-corner {
+    width: 22px;
+    height: 22px;
+    background-color: transparent;
+    cursor: nesw-resize;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1002;
+    /* Visual grip dots */
+    background-image: radial-gradient(circle, #bbb 1px, transparent 1px);
+    background-size: 5px 5px;
+    background-position: bottom right;
+    opacity: 0.5;
+    border-radius: 0 0 12px 0;
+}
+
+#resizer-corner:hover {
+    opacity: 1;
+}
+
 /* Chat Header */
 #chat-header {
     background: linear-gradient(135deg, #007bff, #0056b3);
@@ -518,7 +550,7 @@
         right: 15px;
         left: 15px;
         width: auto;
-        height: calc(100vh - 120px);
+        height: 55vh;
         max-width: none;
         max-height: none;
         min-width: 0;
