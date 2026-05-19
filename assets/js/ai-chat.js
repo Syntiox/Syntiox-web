@@ -143,6 +143,52 @@ function handleKeyPress(event) {
     sendMessage();
   }
 }
+
+function getVisibleContext() {
+  let visibleItems = [];
+  const chatWidgetId = 'chat-window'; 
+  const chatBtnId = 'chat-btn';
+
+  const elements = document.querySelectorAll('h1, h2, h3, p, span, button, a, input, textarea');
+
+  elements.forEach(el => {
+    // Chat widget එකයි button එකයි අතෑරලා දානවා
+    if (el.closest(`#${chatWidgetId}`) || el.closest(`#${chatBtnId}`)) return;
+
+    const rect = el.getBoundingClientRect();
+    
+    // Screen එකේ පේනවද බලන අලුත් ක්‍රමය
+    const isVisibleInViewport = (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
+
+    if (isVisibleInViewport) {
+      const style = window.getComputedStyle(el);
+      if (style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0') {
+        
+        let content = '';
+        const tagName = el.tagName.toLowerCase();
+
+        if (tagName === 'input' || tagName === 'textarea') {
+          content = el.value || el.placeholder;
+        } else {
+          content = el.innerText.trim();
+        }
+
+        if (content !== '') {
+          // Markdown format එකට හදනවා
+          visibleItems.push(`- **[${tagName.toUpperCase()}]** : ${content}`);
+        }
+      }
+    }
+  });
+
+  return visibleItems.join('\n');
+}
+
 async function sendMessage() {
   // සර්වර් එකෙන් එන එක අතරමග නවත්තන්න
   if (abortController) {
@@ -200,10 +246,19 @@ async function sendMessage() {
     }
     // 2️⃣ User ගේ ප්‍රශ්නය History එකට දානවා
     chatHistory.push({ role: "user", content: userText });
+
+    // වෙබ් පිටුවේ ඒ වෙලාවේ user ට පේන්න තියෙන ටික අරගන්නවා (Screen එකේ පේන ටික විතරක් Markdown වලින්)
+    const webContext = getVisibleContext();
+
+    // ඔයාට බලාගන්න Console එකෙත් පෙන්නනවා
+    console.log("==== WEB CONTEXT (Sent to AI) ====\n", webContext, "\n===================================");
+
     // අවසාන මැසේජ් 3න විතරක් payload එකට දානවා (crash නොවෙන්න)
     const payload = {
       history: chatHistory.slice(-3),
+      web_context: webContext
     };
+
     const response = await fetch(API_URL, {
       method: "POST",
       headers: {
