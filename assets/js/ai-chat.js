@@ -312,10 +312,10 @@ async function sendMessage() {
     clearInterval(timerInterval);
     if (error.name === "AbortError") {
       botMessageDiv.innerHTML +=
-        '<br><br><i style="color:#888; font-size:12px;">(ඔබ විසින් නතර කරන ලදී)</i>';
+        '<br><br><i style="color:#a1a1aa; font-size:11px;">(Stopped by user)</i>';
     } else {
       console.error("Error fetching API:", error);
-      botMessageDiv.innerHTML += "<br>❌ Error: සර්වර් එකට කනෙක්ට් වෙන්න බෑ.";
+      botMessageDiv.innerHTML = '<span style="color:#ef4444; font-size:0.875rem;">⚠️ Unable to connect to server. Please check your configuration.</span>';
     }
   } finally {
     clearInterval(timerInterval);
@@ -362,7 +362,7 @@ async function sendMessage() {
       reportBtn.className = "action-btn";
       reportBtn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg> Report`;
       reportBtn.onclick = () => {
-        document.getElementById("report-modal").classList.add("show");
+        document.getElementById("report-modal").classList.add("active");
       };
       
       actionBar.appendChild(copyBtn);
@@ -455,11 +455,11 @@ function showToast(message) {
 }
 
 function clearChat() {
-  document.getElementById("confirm-modal").classList.add("show");
+  document.getElementById("confirm-modal").classList.add("active");
 }
 
 function closeConfirmModal() {
-  document.getElementById("confirm-modal").classList.remove("show");
+  document.getElementById("confirm-modal").classList.remove("active");
 }
 
 function executeClearChat() {
@@ -477,7 +477,7 @@ function executeClearChat() {
 }
 
 function closeReportModal() {
-  document.getElementById("report-modal").classList.remove("show");
+  document.getElementById("report-modal").classList.remove("active");
   document.getElementById("report-text").value = "";
 }
 

@@ -1,430 +1,305 @@
-// --- Navigation Menu ---
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-const navItems = document.querySelectorAll('.nav-links a');
+// =====================================================
+// SYNTIOX — Main Script (Premium Redesign)
+// =====================================================
 
-hamburger.addEventListener('click', () => {
-    navLinks.classList.toggle('active');
-    hamburger.classList.toggle('toggle');
-});
-
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-        hamburger.classList.remove('toggle');
-    });
-});
-
-// Update year
-document.getElementById('year').textContent = new Date().getFullYear();
-
-// --- Scroll Reveal Animation ---
-let revealElements = document.querySelectorAll('.reveal');
-
-const revealOnScroll = () => {
-    const windowHeight = window.innerHeight;
-    const revealPoint = 100;
-
-    revealElements.forEach(el => {
-        const revealTop = el.getBoundingClientRect().top;
-        if (revealTop < windowHeight - revealPoint) {
-            el.classList.add('active');
-        }
-    });
-};
-
-window.addEventListener('scroll', revealOnScroll);
-revealOnScroll(); // Trigger on load
-
-// --- Navbar Background Change on Scroll ---
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
-        navbar.style.borderBottom = '1px solid #e8eaed';
-    } else {
-        navbar.style.background = 'rgba(255, 255, 255, 0.9)';
-        navbar.style.borderBottom = '1px solid transparent';
-    }
-});
-
-// --- Interactive 3D Particle Swarm (Neural Network Style) ---
-const canvas = document.getElementById('hero-canvas');
-const ctx = canvas.getContext('2d');
-
-let width, height;
-let particles = [];
-const colors = ['#4285F4']; // Google Blue
-
-let mouse = { x: 0, y: 0 };
-let targetMouse = { x: 0, y: 0 };
-
-window.addEventListener('mousemove', (e) => {
-    targetMouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-    targetMouse.y = (e.clientY / window.innerHeight) * 2 - 1;
-});
-window.addEventListener('touchmove', (e) => {
-    targetMouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-    targetMouse.y = (e.touches[0].clientY / window.innerHeight) * 2 - 1;
-}, {passive: true});
-
-function resizeCanvas() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    initParticles();
-}
-
-const equations = [
-    'f(x) = σ(Wx + b)',
-    'E = ½∑(t-y)²',
-    '∇L',
-    'σ(z) = 1/(1+e⁻ᶻ)',
-    'W = W - η∇J(W)',
-    'a = ReLU(z)',
-    'z = Wx + b',
-    'Softmax(zᵢ)',
-    '∂E/∂wᵢⱼ',
-    'tanh(x)',
-    'L = -∑ y(log p)',
-    'H(p,q) = -∑ p(x)log q(x)',
-    // Transformers / Attention
-    'Attention(Q,K,V) = softmax(QKᵀ/√dₖ)V',
-    'PE₍ₚₒₛ,₂ᵢ₎ = sin(pos/10000²ⁱ/ᵈ)',
-    // Reinforcement Learning
-    'Q(s,a) = r + γ max Q(s\',a\')',
-    'V*(s) = max_a E[R + γV*(s\')]',
-    // Generative Adversarial Networks (GANs)
-    'min_G max_D V(D,G)',
-    // Probabilistic / Bayesian
-    'P(A|B) = P(B|A)P(A)/P(B)',
-    'KL(P||Q) = ∑ P(x)log(P(x)/Q(x))',
-    // Support Vector Machines (SVM)
-    'yᵢ(w·xᵢ + b) ≥ 1 - ζᵢ',
-    // Recurrent Neural Networks (RNN / LSTM)
-    'hₜ = tanh(Wₕₕhₜ₋₁ + Wₓₕxₜ)',
-    'cₜ = fₜ⊙cₜ₋₁ + iₜ⊙čₜ',
-    // Diffusion Models
-    'xₜ₋₁ = µ_θ(xₜ,t) + Σ_θ(xₜ,t)z'
-];
-
-class Particle {
-    constructor() {
-        // Randomly distribute on a disk
-        let r = Math.sqrt(Math.random()) * (Math.max(width, height) * 0.8);
-        this.baseRadius = r + 10;
-        this.angle = Math.random() * Math.PI * 2;
-
-        this.size = 1.5 + Math.random() * 2; 
-        this.color = colors[Math.floor(Math.random() * colors.length)];
-        
-        this.speedVariability = 0.8 + Math.random() * 0.4;
-
-        this.isEquation = Math.random() < 0.15; // 15% of particles are equations
-        if (this.isEquation) {
-            this.equationText = equations[Math.floor(Math.random() * equations.length)];
-        }
-    }
-
-    update(time, mx, my, centerX, centerY) {
-        let rotTime = time * 0.00015;
-        let currentAngle = this.angle + rotTime * (1 + 80 / (this.baseRadius + 30)) * this.speedVariability;
-
-        let x0 = this.baseRadius * Math.cos(currentAngle);
-        let y0 = this.baseRadius * Math.sin(currentAngle);
-        
-        // Complex sea wave effect using sine waves on radius and angle
-        let wave1 = Math.sin(this.baseRadius * 0.015 - time * 0.002);
-        let wave2 = Math.sin(currentAngle * 4 + time * 0.001);
-        let z0 = (wave1 + wave2) * 45;
-
-        // Apply mouse rotations
-        let rotX = -0.8 + (my * 0.5); 
-        let rotY = mx * 0.7;
-
-        let x1 = x0;
-        let y1 = y0 * Math.cos(rotX) - z0 * Math.sin(rotX);
-        let z1 = y0 * Math.sin(rotX) + z0 * Math.cos(rotX);
-
-        this.x3D = x1 * Math.cos(rotY) - z1 * Math.sin(rotY);
-        this.y3D = y1;
-        this.z3D = x1 * Math.sin(rotY) + z1 * Math.cos(rotY);
-
-        let fov = 1000;
-        let pZ = fov + this.z3D;
-        
-        if (pZ > 0) {
-            this.visible = true;
-            this.scale = fov / pZ;
-            this.px = centerX + this.x3D * this.scale;
-            this.py = centerY + this.y3D * this.scale;
-        } else {
-            this.visible = false;
-        }
-    }
-
-    draw(ctx) {
-        if (!this.visible) return;
-        
-        let s = this.size * this.scale; // Scale particle by depth
-        
-        ctx.beginPath();
-        ctx.arc(this.px, this.py, s, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        
-        let depthAlpha = Math.max(0.1, Math.min(1, 1 - (this.z3D / 800)));
-        let centerFade = Math.min(1, this.baseRadius / 40); 
-        let maxRad = Math.max(width, height) * 0.8;
-        let edgeFade = Math.max(0, 1 - (this.baseRadius / maxRad));
-        
-        ctx.globalAlpha = Math.max(0.02, Math.min(1, depthAlpha * centerFade * edgeFade));
-        ctx.fill();
-
-        if (this.isEquation) {
-            ctx.font = `${Math.max(10, 14 * this.scale)}px "Roboto Mono", "Consolas", monospace`;
-            
-            // Draw equation text cleanly
-            ctx.globalAlpha = Math.max(0.04, Math.min(1, depthAlpha * centerFade * edgeFade * 0.8));
-            ctx.fillStyle = '#1a73e8'; // Darker google blue for text on white bg
-            ctx.fillText(this.equationText, this.px + s + 6, this.py + s);
-        }
-    }
-}
-
-function initParticles() {
-    particles = [];
-    let numParticles = window.innerWidth < 768 ? 150 : 350;
-    for (let i = 0; i < numParticles; i++) {
-        particles.push(new Particle());
-    }
-}
-
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function drawLines(ctx) {
-    // calculate a responsive connection distance limit
-    let maxBaseDimension = Math.max(width, height);
-    let connectDistance = window.innerWidth < 768 ? maxBaseDimension * 0.22 : maxBaseDimension * 0.14;
-    let sqDist = connectDistance * connectDistance;
-    
-    ctx.lineWidth = 1.2;
-
-    // Optimization: avoid slow canvas context changes by batching roughly by opacity
-    let opacityBuckets = Array.from({length: 10}, () => []);
-
-    for (let i = 0; i < particles.length; i++) {
-        let p1 = particles[i];
-        if (!p1.visible) continue;
-        
-        let connectionsCount = 0;
-        
-        for (let j = i + 1; j < particles.length; j++) {
-            let p2 = particles[j];
-            if (!p2.visible) continue;
-            
-            // Fast 3D check to skip 
-            let dx = p1.x3D - p2.x3D;
-            if (Math.abs(dx) > connectDistance) continue;
-            let dy = p1.y3D - p2.y3D;
-            if (Math.abs(dy) > connectDistance) continue;
-            let dz = p1.z3D - p2.z3D;
-            if (Math.abs(dz) > connectDistance) continue;
-
-            let distSq = dx*dx + dy*dy + dz*dz;
-            
-            if (distSq < sqDist) {
-                // fade based on distance
-                let ratio = 1 - (Math.sqrt(distSq) / connectDistance);
-                
-                // base alpha based on depth
-                let avgZ = (p1.z3D + p2.z3D) / 2;
-                let depthAlpha = Math.max(0, Math.min(1, 1 - (avgZ / 800)));
-                
-                // fade out near center and edges to match particles
-                let avgRadius = (p1.baseRadius + p2.baseRadius) / 2;
-                let centerFade = Math.min(1, avgRadius / 40);
-                let maxRad = maxBaseDimension * 0.8;
-                let edgeFade = Math.max(0, 1 - (avgRadius / maxRad));
-                
-                let targetAlpha = Math.max(0.02, ratio * 0.8 * depthAlpha * centerFade * edgeFade);
-                
-                // Map alpha from 0 to 1 into 10 buckets
-                let bucketIdx = Math.min(9, Math.floor(targetAlpha * 10));
-                opacityBuckets[bucketIdx].push({x1: p1.px, y1: p1.py, x2: p2.px, y2: p2.py});
-                
-                connectionsCount++;
-                if (connectionsCount > 8) break; // Optimization: max connections per node
-            }
-        }
-    }
-
-    ctx.strokeStyle = '#4285F4';
-    opacityBuckets.forEach((bucket, i) => {
-        if (bucket.length === 0) return;
-        ctx.globalAlpha = i / 10 + 0.05;
-        ctx.beginPath();
-        for (let line of bucket) {
-            ctx.moveTo(line.x1, line.y1);
-            ctx.lineTo(line.x2, line.y2);
-        }
-        ctx.stroke();
-    });
-}
-
-function render(time) {
-    if (!time) time = 0;
-
-    // Use a slight trailing effect but keep text readable
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; 
-    ctx.fillRect(0, 0, width, height);
-
-    mouse.x += (targetMouse.x - mouse.x) * 0.08;
-    mouse.y += (targetMouse.y - mouse.y) * 0.08;
-
-    let centerX = width / 2;
-    let centerY = height / 2;
-
-    // First update all 3D positions
-    particles.forEach(p => p.update(time, mouse.x, mouse.y, centerX, centerY));
-    
-    // Draw connections
-    drawLines(ctx);
-
-    // Draw individual nodes on top
-    particles.forEach(p => p.draw(ctx));
-    
-    requestAnimationFrame(render);
-}
-
-requestAnimationFrame(render);
-
-// --- Inject Dynamic Data (Projects & Gallery) ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Utility to parse marquees
-    function initMarquee(containerId, htmlContentArray, isAutoScroll = true) {
-        const marquee = document.getElementById(containerId);
-        if (!marquee) return;
-        
-        const track = document.createElement('div');
-        track.className = 'marquee-track';
-        
-        let cardsHTML = htmlContentArray.join('');
-        
-        // Only duplicate and auto-scroll if we have enough items (e.g. > 3) to make it look like a real continuous loop.
-        const shouldLoop = isAutoScroll && htmlContentArray.length > 3;
+    initScrollReveal();
+    initNavbar();
+    initMobileMenu();
+    initScrollProgress();
+    setFooterYear();
+});
 
-        if (shouldLoop) {
-            track.innerHTML = cardsHTML + cardsHTML + cardsHTML + cardsHTML;
+// ── Scroll Reveal ──────────────────────────────────
+function initScrollReveal() {
+    const elements = document.querySelectorAll('.reveal');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    elements.forEach(el => observer.observe(el));
+}
+
+// ── Navbar Scroll Behavior ─────────────────────────
+function initNavbar() {
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+
+        if (currentScroll > 20) {
+            navbar.classList.add('scrolled');
         } else {
-            track.innerHTML = cardsHTML;
-            // For non-looping tracks with few items, let's keep them centered via 'margin: 0 auto' in CSS.
-            // But if we want it to not drag aggressively if it fits on screen, we don't need JS overwrites.
+            navbar.classList.remove('scrolled');
         }
-        marquee.appendChild(track);
 
-        // Drag and Auto-Scroll Logic
-        let isDown = false;
-        let startX;
-        let scrollLeft;
-        let isHovered = false;
-        let isDragging = false;
+        // Update active nav link based on section
+        updateActiveNavLink();
 
-        marquee.addEventListener('mousedown', (e) => {
-            isDown = true;
-            isDragging = false; 
-            startX = e.pageX - marquee.offsetLeft;
-            scrollLeft = marquee.scrollLeft;
-        });
-        marquee.addEventListener('mouseleave', () => { isDown = false; isHovered = false; });
-        marquee.addEventListener('mouseenter', () => { isHovered = true; });
-        marquee.addEventListener('mouseup', () => { isDown = false; });
-        marquee.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            isDragging = true;
-            const x = e.pageX - marquee.offsetLeft;
-            const walk = (x - startX) * 2;
-            marquee.scrollLeft = scrollLeft - walk;
-        });
-        
-        // Prevent clicking links inside items while dragging
-        marquee.addEventListener('click', (e) => {
-            if (isDragging) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
+        lastScroll = currentScroll;
+    }, { passive: true });
+}
 
-        // Touch support for dragging
-        marquee.addEventListener('touchstart', (e) => { 
-            isDown = true; 
-            isHovered = true; 
-            isDragging = false;
-            startX = e.touches[0].pageX - marquee.offsetLeft;
-            scrollLeft = marquee.scrollLeft;
-        }, {passive: true});
-        marquee.addEventListener('touchend', () => { isDown = false; isHovered = false; });
-        marquee.addEventListener('touchmove', (e) => {
-            if (!isDown) return;
-            isDragging = true;
-            const x = e.touches[0].pageX - marquee.offsetLeft;
-            const walk = (x - startX) * 2;
-            marquee.scrollLeft = scrollLeft - walk;
-        }, {passive: true});
+function updateActiveNavLink() {
+    const sections = ['hero', 'products', 'capabilities', 'about', 'community', 'contact'];
+    const scrollPos = window.pageYOffset + 100;
 
-        if (shouldLoop) {
-            let scrollSpeed = 1;
-            function autoScroll() {
-                if (!isDown && !isHovered) {
-                    marquee.scrollLeft += scrollSpeed;
-                    if (marquee.scrollLeft >= track.scrollWidth / 2) {
-                        marquee.scrollLeft = 0;
-                    }
-                }
-                requestAnimationFrame(autoScroll);
-            }
-            autoScroll();
+    sections.forEach(id => {
+        const section = document.getElementById(id);
+        const link = document.querySelector(`.nav-link[href="#${id}"]`);
+
+        if (!section || !link) return;
+
+        const sectionTop = section.offsetTop;
+        const sectionBottom = sectionTop + section.offsetHeight;
+
+        if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+            document.querySelectorAll('.nav-link').forEach(l => l.style.color = '');
+            link.style.color = '#1d1d1f';
         }
+    });
+}
+
+// ── Mobile Menu ────────────────────────────────────
+function initMobileMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (!hamburger || !mobileMenu) return;
+
+    hamburger.addEventListener('click', () => {
+        hamburger.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
+    });
+}
+
+function closeMobileMenu() {
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (hamburger) hamburger.classList.remove('open');
+    if (mobileMenu) mobileMenu.classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Expose globally
+window.closeMobileMenu = closeMobileMenu;
+
+// ── Scroll Progress (subtle top bar) ──────────────
+function initScrollProgress() {
+    // Create progress bar
+    const bar = document.createElement('div');
+    bar.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 2px;
+        background: linear-gradient(to right, #0071e3, #6366f1);
+        z-index: 9999;
+        width: 0%;
+        transition: width 0.1s linear;
+        pointer-events: none;
+    `;
+    document.body.appendChild(bar);
+
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        bar.style.width = `${Math.min(progress, 100)}%`;
+    }, { passive: true });
+}
+
+// ── Footer Year ────────────────────────────────────
+function setFooterYear() {
+    const el = document.getElementById('year');
+    if (el) el.textContent = new Date().getFullYear();
+}
+
+// ── Chat Toggle ────────────────────────────────────
+function toggleChat() {
+    const chatWindow = document.getElementById('chat-window');
+    if (!chatWindow) return;
+
+    const isOpen = chatWindow.classList.contains('open');
+    if (isOpen) {
+        chatWindow.classList.remove('open');
+        chatWindow.style.display = 'none';
+    } else {
+        chatWindow.classList.add('open');
+        chatWindow.style.display = 'flex';
+        // Focus input
+        setTimeout(() => {
+            const input = document.getElementById('chat-input');
+            if (input) input.focus();
+        }, 100);
+    }
+}
+window.toggleChat = toggleChat;
+
+// ── Chat Resize ────────────────────────────────────
+(function initChatResize() {
+    const chatWindow = document.getElementById('chat-window');
+    const resizer = document.getElementById('resizer');
+    const resizerLeft = document.getElementById('resizer-left');
+    const resizerCorner = document.getElementById('resizer-corner');
+
+    if (!chatWindow || !resizer) return;
+
+    let isResizing = false;
+    let startX, startY, startW, startH;
+    let resizeMode = '';
+
+    function startResize(e, mode) {
+        isResizing = true;
+        resizeMode = mode;
+        startX = e.clientX;
+        startY = e.clientY;
+        startW = chatWindow.offsetWidth;
+        startH = chatWindow.offsetHeight;
+        document.body.style.userSelect = 'none';
+        e.preventDefault();
     }
 
-    // 1. Render Projects (Infinite scrolling left-to-right)
-    if (typeof syntioxData !== 'undefined' && syntioxData.projects) {
-        const projectHTMLArray = syntioxData.projects.map((project) => {
-            const techTags = project.technologies.map(tech => `<span class="tech-tag">${tech}</span>`).join('');
-            const logoContent = project.logoImg ? `<img src="${project.logoImg}" alt="${project.name} Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 14px; pointer-events: none;">` : project.logo;
-            return `
-                <div class="project-card">
-                    <div class="project-header">
-                        <div class="project-logo">${logoContent}</div>
-                        <h3 class="project-title">${project.name}</h3>
-                    </div>
-                    <p class="project-desc">${project.description}</p>
-                    <div class="tech-stack">${techTags}</div>
-                    <a href="${project.link}" class="project-link" draggable="false">View Documentation &rarr;</a>
-                </div>
-            `;
-        });
-        initMarquee('project-marquee', projectHTMLArray);
-    }
+    resizer.addEventListener('mousedown', e => startResize(e, 'y'));
+    if (resizerLeft) resizerLeft.addEventListener('mousedown', e => startResize(e, 'x'));
+    if (resizerCorner) resizerCorner.addEventListener('mousedown', e => startResize(e, 'xy'));
 
-    // 2. Render Gallery Grid
-    const galleryGrid = document.getElementById('gallery-grid');
-    if (galleryGrid && typeof syntioxData !== 'undefined') {
-        const galleryHTML = syntioxData.gallery.map((item, index) => `
-            <div class="gallery-item reveal" style="transition-delay: ${index * 0.1}s">
-                <img src="${item.image}" alt="${item.title}" loading="lazy">
-                <div class="gallery-overlay">
-                    <h4 class="gallery-title">${item.title}</h4>
-                </div>
+    document.addEventListener('mousemove', e => {
+        if (!isResizing) return;
+        const dx = startX - e.clientX;
+        const dy = startY - e.clientY;
+
+        if (resizeMode === 'y' || resizeMode === 'xy') {
+            const newH = Math.max(300, Math.min(startH + dy, window.innerHeight - 120));
+            chatWindow.style.height = newH + 'px';
+        }
+        if (resizeMode === 'x' || resizeMode === 'xy') {
+            const newW = Math.max(280, Math.min(startW + dx, 600));
+            chatWindow.style.width = newW + 'px';
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        isResizing = false;
+        document.body.style.userSelect = '';
+    });
+})();
+
+// ── Clear Chat ────────────────────────────────────
+function clearChat() {
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) {
+        confirmModal.classList.add('active');
+    }
+}
+
+function closeConfirmModal() {
+    const confirmModal = document.getElementById('confirm-modal');
+    if (confirmModal) {
+        confirmModal.classList.remove('active');
+    }
+}
+
+function executeClearChat() {
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) {
+        chatMessages.innerHTML = `
+            <div class="message bot-message">Hello! I'm Syntiox AI. How can I help you today? 😊</div>
+            <div id="suggestions" class="suggestions-container">
+                <button class="suggestion-btn" onclick="sendSuggestion('Who are you?')">Who are you?</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('Tell me about Syntiox')">Tell me about Syntiox</button>
+                <button class="suggestion-btn" onclick="sendSuggestion('What can you do?')">What can you do?</button>
             </div>
-        `).join('');
-        
-        galleryGrid.innerHTML = galleryHTML;
+        `;
     }
+    closeConfirmModal();
+    showToast('Chat cleared', 'success');
+}
 
+window.clearChat = clearChat;
+window.closeConfirmModal = closeConfirmModal;
+window.executeClearChat = executeClearChat;
 
+// ── Report Modal ──────────────────────────────────
+function openReportModal() {
+    const modal = document.getElementById('report-modal');
+    if (modal) modal.classList.add('active');
+}
 
-    // Re-trigger reveal animation for newly injected items
-    revealElements = document.querySelectorAll('.reveal');
-    revealOnScroll();
+function closeReportModal() {
+    const modal = document.getElementById('report-modal');
+    if (modal) modal.classList.remove('active');
+}
+
+async function submitReport() {
+    const text = document.getElementById('report-text')?.value?.trim();
+    if (!text) {
+        showToast('Please describe the issue first.', 'error');
+        return;
+    }
+    closeReportModal();
+    showToast('Report sent. Thank you!', 'success');
+    if (document.getElementById('report-text')) {
+        document.getElementById('report-text').value = '';
+    }
+}
+
+window.openReportModal = openReportModal;
+window.closeReportModal = closeReportModal;
+window.submitReport = submitReport;
+
+// ── Toast Notifications ───────────────────────────
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'toast-out 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+window.showToast = showToast;
+
+// ── Keyboard shortcut: ESC closes menus ──────────
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        closeMobileMenu();
+        closeReportModal();
+        closeConfirmModal();
+
+        // Close chat
+        const chatWindow = document.getElementById('chat-window');
+        if (chatWindow && chatWindow.classList.contains('open')) {
+            toggleChat();
+        }
+    }
+});
+
+// ── Smooth anchor clicks ──────────────────────────
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            e.preventDefault();
+            const offset = 80;
+            const top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+    });
 });
