@@ -126,16 +126,37 @@ function stopResize() {
 document.addEventListener("mouseup", stopResize);
 document.addEventListener("touchend", stopResize);
 // --------------------------------------------------
+let chatWarningShown = false;
+
 function toggleChat() {
-  if (chatWindow.classList.contains("show")) {
-    chatWindow.classList.remove("show");
+  if (chatWindow.classList.contains("open")) {
+    chatWindow.classList.remove("open");
     // Wait for transition before display:none
     setTimeout(() => (chatWindow.style.display = "none"), 300);
   } else {
     chatWindow.style.display = "flex";
     // Small delay to allow display:flex to apply before adding class for transition
-    setTimeout(() => chatWindow.classList.add("show"), 10);
+    setTimeout(() => chatWindow.classList.add("open"), 10);
     chatInput.focus();
+
+    // Show CPU warning once per session when opened
+    if (!chatWarningShown) {
+      chatWarningShown = true;
+      const warning = document.getElementById("cpu-warning");
+      if (warning) {
+        warning.style.display = "block";
+        setTimeout(() => {
+          // fade out effect
+          warning.style.transition = "opacity 0.4s ease, margin-top 0.4s ease, height 0.4s ease, padding 0.4s ease";
+          warning.style.opacity = "0";
+          warning.style.height = "0";
+          warning.style.padding = "0";
+          warning.style.border = "none";
+          warning.style.overflow = "hidden";
+          setTimeout(() => warning.style.display = "none", 400);
+        }, 5500); // Wait 5.5 seconds before hiding
+      }
+    }
   }
 }
 function handleKeyPress(event) {
