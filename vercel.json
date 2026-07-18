@@ -2,11 +2,11 @@
   "rewrites": [
     {
       "source": "/u/:username",
-      "destination": "/profile.html"
+      "destination": "/profile"
     },
     {
       "source": "/profile",
-      "destination": "/profile.html"
+      "destination": "/profile"
     }
   ],
   "cleanUrls": true
