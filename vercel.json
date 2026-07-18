@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    {
+      "source": "/u/:username",
+      "destination": "/profile.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile.html"
+    }
+  ],
+  "cleanUrls": true
+}
