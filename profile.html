@@ -71,6 +71,11 @@
           return;
       }
 
+      // Remove '@' prefix if user typed /u/@sh4lu-z
+      if (username.startsWith('@')) {
+        username = username.substring(1);
+      }
+
       try {
         const response = await fetch(`https://account.syntiox.top/api/profile?username=${encodeURIComponent(username)}`);
         
