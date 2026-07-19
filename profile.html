@@ -371,7 +371,14 @@
 
     async function main() {
       const params = new URLSearchParams(window.location.search);
-      const handle = params.get('handle') || params.get('u') || '';
+
+      // Vercel rewrites keep the original browser URL (/u/username),
+      // so we extract the username directly from the pathname.
+      const pathMatch = window.location.pathname.match(/^\/u\/([^/]+)/);
+      const handle = (pathMatch && pathMatch[1])
+                  || params.get('handle')
+                  || params.get('u')
+                  || '';
 
       if (!handle) {
         renderError('404', 'No username specified.');
