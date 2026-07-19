@@ -159,11 +159,31 @@
     }
     .link-item:hover .link-arrow { transform:translateX(3px); }
 
-    .empty-links {
-      text-align:center; padding:40px 24px; color:var(--text2); font-size:0.9rem;
-      background:var(--link-bg); border:1px dashed var(--link-border); border-radius:16px;
+    .empty-links { display:none; }
+
+    /* Stats row */
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin: 16px 0 24px;
     }
-    .empty-links i { font-size:2rem; margin-bottom:12px; display:block; opacity:0.4; }
+    .stat-item { text-align: center; }
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text2);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
 
     /* Share bar */
     .share-bar { display:flex; gap:10px; margin-bottom:28px; justify-content:center; }
@@ -298,9 +318,7 @@
       const pageUrl = `https://syntiox.top/u/${username}`;
 
       let linksHtml = '';
-      if (links.length === 0) {
-        linksHtml = `<div class="empty-links"><i class="fa-solid fa-link-slash"></i>No links added yet.</div>`;
-      } else {
+      if (links.length > 0) {
         linksHtml = links.map(link => {
           const iconInfo = detectIcon(link.url, accent);
           return `
@@ -312,6 +330,17 @@
         }).join('');
       }
 
+      // Stats (coins, etc.) — only show if data exists
+      const coins = data.coins != null ? Number(data.coins) : null;
+      const statsHtml = coins !== null ? `
+        <div class="profile-stats">
+          <div class="stat-item">
+            <div class="stat-value">💰 ${coins.toLocaleString()}</div>
+            <div class="stat-label">Coins</div>
+          </div>
+        </div>` : '';
+
+
       document.getElementById('root').innerHTML = `
         <div class="profile-card">
           <div class="profile-header">
@@ -322,6 +351,7 @@
             <h1 class="display-name">${escapeHtml(displayName || username || 'Unknown')}</h1>
             ${username ? `<p class="username-handle">@${escapeHtml(username)}</p>` : ''}
             ${bio ? `<p class="bio">${escapeHtml(bio)}</p>` : ''}
+            ${statsHtml}
           </div>
 
           <div class="share-bar">
