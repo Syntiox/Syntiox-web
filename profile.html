@@ -226,15 +226,29 @@
     .stat-label { font-size:0.68rem; color:var(--pg-text2); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
 
     /* ── Social icons ── */
-    .social-icons-row { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
-    body[data-layout="center"] .social-icons-row { justify-content:center; }
-    .social-ic {
-      width:36px; height:36px; border-radius:10px;
-      display:flex; align-items:center; justify-content:center;
-      color:white; font-size:0.88rem; text-decoration:none;
-      transition:all var(--t); flex-shrink:0;
+    .social-row-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-bottom: 18px;
     }
-    .social-ic:hover { transform:translateY(-3px) scale(1.08); box-shadow:0 6px 16px rgba(0,0,0,0.2); }
+    .social-row-wrap::-webkit-scrollbar { display: none; }
+    .social-icons-row {
+      display: flex;
+      gap: 8px;
+      padding: 4px 2px;
+      width: max-content;
+      min-width: 100%;
+    }
+    body[data-layout="center"] .social-icons-row { justify-content: center; }
+    .social-ic {
+      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 0.82rem; text-decoration: none;
+      transition: all var(--t);
+    }
+    .social-ic:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 5px 14px rgba(0,0,0,0.22); }
 
     /* ── Share bar ── */
     .share-bar { display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
@@ -593,9 +607,13 @@
             <h1 class="display-name">${esc(displayName || username || 'User')}</h1>
             ${username  ? `<p class="username-handle">@${esc(username)}</p>` : ''}
             ${bio       ? `<p class="bio">${esc(bio)}</p>` : ''}
-            ${socialHtml ? `<div class="social-icons-row">${socialHtml}</div>` : ''}
             ${statsHtml}
           </div>
+
+          ${socialHtml ? `
+          <div class="social-row-wrap">
+            <div class="social-icons-row">${socialHtml}</div>
+          </div>` : ''}
 
           <div class="share-bar">
             <button class="share-btn" id="btn-copy-link">
