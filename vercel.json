@@ -2,12 +2,9 @@
   "rewrites": [
     {
       "source": "/u/:username",
-      "destination": "/profile"
-    },
-    {
-      "source": "/profile",
-      "destination": "/profile"
+      "destination": "/profile?handle=:username"
     }
   ],
   "cleanUrls": true
 }
+
