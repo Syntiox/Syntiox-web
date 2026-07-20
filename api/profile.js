@@ -56,7 +56,16 @@ export default async function handler(req, res) {
       // Get values, handling potential nulls
       const name = f.displayName ? f.displayName.stringValue : (f.name ? f.name.stringValue : 'User');
       const bio = f.bio ? f.bio.stringValue : 'Syntiox Profile';
-      const photoURL = f.photoURL ? f.photoURL.stringValue : 'https://syntiox.top/assets/logo-IcotzT0R.png';
+      
+      // Check if user has explicitly disabled metadata photo
+      let showPhoto = true;
+      if (f.appearance && f.appearance.mapValue && f.appearance.mapValue.fields && f.appearance.mapValue.fields.showMetadataPhoto) {
+        showPhoto = f.appearance.mapValue.fields.showMetadataPhoto.booleanValue !== false;
+      }
+      
+      const photoURL = (showPhoto && f.photoURL) 
+        ? f.photoURL.stringValue 
+        : 'https://syntiox.top/assets/logo-IcotzT0R.png';
       
       const title = `${name} | Syntiox`;
 
