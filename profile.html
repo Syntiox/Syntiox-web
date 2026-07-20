@@ -683,25 +683,28 @@
 
       const socialHtml = SOCIAL_DEFS.filter(s => social[s.id])
         .map(s => {
-          const href = `${s.prefix}${social[s.id]}`;
-          return `<a class="social-ic" href="${esc(href)}" style="background:${s.color};" target="_blank" rel="noopener" title="${s.id}"><i class="${s.icon}"></i></a>`;
+          const rawUrl = `${s.prefix}${social[s.id]}`;
+          const safeUid = userData.uid || '';
+          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${safeUid}&key=Social%3A%20${encodeURIComponent(s.label || s.id)}&url=${encodeURIComponent(rawUrl)}`;
+          
+          return `<a class="social-ic" href="${esc(redirectUrl)}" style="background:${s.color};" target="_blank" rel="noopener" title="${s.id}"><i class="${s.icon}"></i></a>`;
         }).join('');
 
-      // Links HTML with click tracking
+      // Links HTML with server-side redirect tracking
       const linksHtml = links.length > 0 ? `
         <div class="links-section">
           ${links.map(link => {
             const {icon, color} = detectIcon(link.url, accent);
-            const safeTitle = (link.title||'').replace(/'/g,"\\'");
+            const safeTitle = link.title || 'Untitled Link';
             const safeUid   = userData.uid || '';
+            const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${safeUid}&key=${encodeURIComponent(safeTitle)}&url=${encodeURIComponent(link.url)}`;
+            
             return `
-              <a class="link-item" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer"
-                onclick="fetch('https://account.syntiox.top/api/analytics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:'${esc(safeUid)}',type:'link_click',linkTitle:'${safeTitle}',linkUrl:'${esc(link.url)}'})})"
-              >
+              <a class="link-item" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
                 <span class="link-icon" style="background:${color};">
                   <i class="${icon}"></i>
                 </span>
-                <span class="link-title">${esc(link.title)}</span>
+                <span class="link-title">${esc(safeTitle)}</span>
                 <i class="fa-solid fa-chevron-right link-arrow"></i>
               </a>`;
           }).join('')}
