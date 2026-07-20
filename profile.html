@@ -659,15 +659,18 @@
         { id:'email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:',                   fullValue:true  },
         { id:'phone',       icon:'fa-solid fa-phone',          color:'#25d366', prefix:'tel:',                      fullValue:true  },
         { id:'whatsapp',    icon:'fa-brands fa-whatsapp',      color:'#25d366', prefix:'https://wa.me/',            fullValue:false },
+        { id:'telegram',    icon:'fa-brands fa-telegram',      color:'#0088cc', prefix:'https://t.me/',             fullValue:false },
+        { id:'linkedin',    icon:'fa-brands fa-linkedin',      color:'#0077b5', prefix:'https://linkedin.com/',     fullValue:false },
+        { id:'discord',     icon:'fa-brands fa-discord',       color:'#5865f2', prefix:'https://discord.com/users/',fullValue:false },
+        { id:'youtube',     icon:'fa-brands fa-youtube',       color:'#ff0000', prefix:'https://youtube.com/',      fullValue:false },
         { id:'instagram',   icon:'fa-brands fa-instagram',     color:'#e1306c', prefix:'https://instagram.com/',    fullValue:false },
         { id:'twitter',     icon:'fa-brands fa-x-twitter',     color:'#000000', prefix:'https://x.com/',            fullValue:false },
         { id:'facebook',    icon:'fa-brands fa-facebook',      color:'#1877f2', prefix:'https://facebook.com/',     fullValue:false },
         { id:'bluesky',     icon:'fa-solid fa-cloud',          color:'#0085ff', prefix:'https://bsky.app/profile/', fullValue:false },
-        { id:'medium',      icon:'fa-brands fa-medium',        color:'#333333', prefix:'https://medium.com/@',      fullValue:false },
-        { id:'huggingface', icon:'fa-solid fa-face-smile',     color:'#ff9d00', prefix:'https://huggingface.co/',   fullValue:false },
-        { id:'github',      icon:'fa-brands fa-github',        color:'#24292f', prefix:'https://github.com/',       fullValue:false },
-        { id:'tryhackme',   icon:'fa-solid fa-flag',           color:'#88cc14', prefix:'https://tryhackme.com/p/', fullValue:false },
-        { id:'telegram',    icon:'fa-brands fa-telegram',      color:'#0088cc', prefix:'https://t.me/',             fullValue:false },
+        { id:'threads',     icon:'fa-brands fa-threads',       color:'#000000', prefix:'https://threads.net/@',     fullValue:false },
+        { id:'tiktok',      icon:'fa-brands fa-tiktok',        color:'#010101', prefix:'https://tiktok.com/',       fullValue:false },
+        { id:'snapchat',    icon:'fa-brands fa-snapchat',      color:'#ffcc00', prefix:'https://snapchat.com/add/', fullValue:false },
+        { id:'reddit',      icon:'fa-brands fa-reddit',        color:'#ff4500', prefix:'https://reddit.com/',       fullValue:false },
       ];
 
       const socialHtml = SOCIAL_DEFS.filter(s => social[s.id])
@@ -757,14 +760,16 @@
 
             ${linksHtml}
 
-            <div class="syntiox-badge">
-              <a href="https://syntiox.top" target="_blank" rel="noopener">
-                <img src="https://syntiox.top/assets/logo-IcotzT0R.png" alt="Syntiox" />
-                Built with Syntiox
-              </a>
-            </div>
           </div>
-        </div>`;
+        </div>
+
+        <div class="syntiox-badge">
+          <a href="https://syntiox.top" target="_blank" rel="noopener">
+            <img src="https://syntiox.top/assets/logo-IcotzT0R.png" alt="Syntiox" />
+            Built with Syntiox
+          </a>
+        </div>
+      </div>`;
 
       // Share handlers
       document.getElementById('btn-copy-link').addEventListener('click', () => {
