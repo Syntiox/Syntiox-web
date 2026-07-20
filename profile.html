@@ -627,6 +627,12 @@
       if (ap.bgType === 'gradient' && ap.bgGradient) {
         b.style.background = ap.bgGradient;
       }
+
+      // Text color override
+      if (ap.textColor) {
+        b.style.setProperty('--pg-text', ap.textColor);
+        b.style.setProperty('--pg-text2', `color-mix(in srgb, ${ap.textColor} 70%, transparent)`);
+      }
     }
 
     // ── Render profile ────────────────────────────
