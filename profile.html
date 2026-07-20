@@ -641,7 +641,7 @@
     function render(userData) {
       const {
         displayName, username, bio, photoURL, bannerURL,
-        links = [], appearance = {}, coins, social = {}, verified = false
+        links = [], appearance = {}, coins, social = {}, verified = false, profileViews = 0
       } = userData;
 
       applyAppearance(appearance);
@@ -709,9 +709,11 @@
 
       // Stats (coins + optional view count)
       const showViews = appearance.showViewCount !== false;
+      const viewsVal  = userData.profileViews || 0;
       const statsHtml = (coins != null || showViews) ? `
         <div class="profile-stats">
           ${coins != null ? `<div class="stat-item"><div class="stat-value">💰 ${Number(coins).toLocaleString()}</div><div class="stat-label">Coins</div></div>` : ''}
+          ${showViews ? `<div class="stat-item"><div class="stat-value"><i class="fa-solid fa-eye"></i> ${viewsVal.toLocaleString()}</div><div class="stat-label">Views</div></div>` : ''}
         </div>` : '';
       // Verified badge
       const verifiedBadge = verified
