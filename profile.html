@@ -645,6 +645,15 @@
       const accent  = appearance.accentColor || '#0071e3';
       const pageUrl = `https://syntiox.top/u/${username}`;
 
+      // 📊 Fire analytics view event (non-blocking)
+      if (userData.uid) {
+        fetch('https://account.syntiox.top/api/analytics', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: userData.uid, type: 'view' }),
+        }).catch(() => {});
+      }
+
       // Social platforms config
       const SOCIAL_DEFS = [
         { id:'email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:',                   fullValue:true  },
@@ -667,13 +676,17 @@
           return `<a class="social-ic" href="${esc(href)}" style="background:${s.color};" target="_blank" rel="noopener" title="${s.id}"><i class="${s.icon}"></i></a>`;
         }).join('');
 
-      // Links HTML
+      // Links HTML with click tracking
       const linksHtml = links.length > 0 ? `
         <div class="links-section">
           ${links.map(link => {
             const {icon, color} = detectIcon(link.url, accent);
+            const safeTitle = (link.title||'').replace(/'/g,"\\'");
+            const safeUid   = userData.uid || '';
             return `
-              <a class="link-item" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">
+              <a class="link-item" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer"
+                onclick="fetch('https://account.syntiox.top/api/analytics',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:'${esc(safeUid)}',type:'link_click',linkTitle:'${safeTitle}',linkUrl:'${esc(link.url)}'})})"
+              >
                 <span class="link-icon" style="background:${color};">
                   <i class="${icon}"></i>
                 </span>
@@ -683,15 +696,12 @@
           }).join('')}
         </div>` : '';
 
-      // Stats
-      const statsHtml = (coins != null) ? `
+      // Stats (coins + optional view count)
+      const showViews = appearance.showViewCount !== false;
+      const statsHtml = (coins != null || showViews) ? `
         <div class="profile-stats">
-          <div class="stat-item">
-            <div class="stat-value">💰 ${Number(coins).toLocaleString()}</div>
-            <div class="stat-label">Coins</div>
-          </div>
+          ${coins != null ? `<div class="stat-item"><div class="stat-value">💰 ${Number(coins).toLocaleString()}</div><div class="stat-label">Coins</div></div>` : ''}
         </div>` : '';
-
       // Verified badge
       const verifiedBadge = verified
         ? `<span class="verified-badge" title="Verified"><i class="fa-solid fa-check"></i></span>`
