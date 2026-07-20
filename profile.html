@@ -214,6 +214,16 @@
       padding: 48px 16px 80px;
     }
     .page-wrap.has-banner { padding-top: 24px; }
+    
+    /* ── Avatar Overlap Cover Photo ── */
+    body[data-avatar-overlap="true"] .page-wrap.has-banner { padding-top: 0; }
+    body[data-avatar-overlap="true"] .page-wrap.has-banner .profile-header {
+      margin-top: -54px;
+    }
+    body[data-avatar-overlap="true"] .page-wrap.has-banner .avatar-wrap {
+      /* Add some visual pop if overlapping */
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+    }
 
     .profile-card {
       width: 100%;
@@ -616,6 +626,7 @@
       b.dataset.linkIcon   = (ap.linkShowIcon === false) ? 'false' : 'true';
       b.dataset.font       = ap.fontFamily  || 'inter';
       b.dataset.animations = (ap.enableAnimations === false) ? 'off' : 'on';
+      b.dataset.avatarOverlap = (ap.avatarOverlap === true) ? 'true' : 'false';
 
       const accent = ap.accentColor || '#0071e3';
       b.style.setProperty('--pg-accent', accent);
