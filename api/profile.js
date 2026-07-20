@@ -1,6 +1,6 @@
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
 
 export default async function handler(req, res) {
   const handle = req.query.handle;
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
     });
 
     if (!usernameRes || !usernameRes.fields || !usernameRes.fields.uid) {
-      // User not found, just return original HTML so JS handles 404
-      return res.status(200).setHeader('Content-Type', 'text/html').send(html);
+      res.setHeader('Content-Type', 'text/html');
+      return res.status(200).send(html);
     }
 
     const uid = usernameRes.fields.uid.stringValue;
