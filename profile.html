@@ -722,13 +722,30 @@
           }).join('')}
         </div>` : '';
 
-      // Stats (coins + optional view count)
+      // Short currency formatter (e.g. 1.5K, 50B)
+      function formatShortCurrency(value) {
+        if (!value) return "0";
+        if (value >= 1e9) return (value / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+        if (value >= 1e6) return (value / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (value >= 1e3) return (value / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+        return Number(value).toFixed(2).replace(/\.00$/, ''); // show max 2 decimal places if less than 1K
+      }
+
+      // Stats (wallet, coins, views)
       const showViews = appearance.showViewCount !== false;
+      const showWallet = appearance.showWalletBalance === true;
+      const showCoins = appearance.showCoinsBalance !== false;
       const viewsVal  = userData.profileViews || 0;
-      const statsHtml = (coins != null || showViews) ? `
+      const walletVal = userData.wallet_balance || 0;
+      
+      // We do not highlight "USD $" here since the user clarified that's for receipts only.
+      const walletFormatted = `USD $${formatShortCurrency(walletVal)}`;
+
+      const statsHtml = ((coins != null && showCoins) || showViews || showWallet) ? `
         <div class="profile-stats">
-          ${coins != null ? `<div class="stat-item"><div class="stat-value">💰 ${Number(coins).toLocaleString()}</div><div class="stat-label">Coins</div></div>` : ''}
-          ${showViews ? `<div class="stat-item"><div class="stat-value"><i class="fa-solid fa-eye"></i> ${viewsVal.toLocaleString()}</div><div class="stat-label">Views</div></div>` : ''}
+          ${showWallet ? `<div class="stat-item"><div class="stat-value">${walletFormatted}</div><div class="stat-label">Balance</div></div>` : ''}
+          ${(coins != null && showCoins) ? `<div class="stat-item"><div class="stat-value">💰 ${formatShortCurrency(coins)}</div><div class="stat-label">Coins</div></div>` : ''}
+          ${showViews ? `<div class="stat-item"><div class="stat-value"><i class="fa-solid fa-eye"></i> ${formatShortCurrency(viewsVal)}</div><div class="stat-label">Views</div></div>` : ''}
         </div>` : '';
       // Verified badge
       const verifiedBadge = verified
