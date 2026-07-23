@@ -1592,3 +1592,18 @@ h1, h2, h3, h4 {
         gap: 32px;
     }
 }
+
+
+/* Extracted from contact.html */
+/* Standalone page adjustments */
+        main {
+            padding-top: calc(var(--nav-h) + 40px);
+            min-height: calc(100vh - 350px);
+            display: flex;
+            align-items: center;
+        }
+        #contact {
+            border-top: none;
+            width: 100%;
+        }
+
