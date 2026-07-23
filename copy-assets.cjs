@@ -7,6 +7,9 @@ const destJs = path.join(__dirname, 'dist', 'assets', 'js');
 const srcImg = path.join(__dirname, 'assets', 'image');
 const destImg = path.join(__dirname, 'dist', 'assets', 'image');
 
+const srcCss = path.join(__dirname, 'assets', 'css');
+const destCss = path.join(__dirname, 'dist', 'assets', 'css');
+
 if (fs.existsSync(srcJs)) {
   fs.cpSync(srcJs, destJs, { recursive: true, force: true });
   console.log('Copied assets/js to dist/assets/js');
@@ -15,4 +18,9 @@ if (fs.existsSync(srcJs)) {
 if (fs.existsSync(srcImg)) {
   fs.cpSync(srcImg, destImg, { recursive: true, force: true });
   console.log('Copied assets/image to dist/assets/image');
+}
+
+if (fs.existsSync(srcCss)) {
+  fs.cpSync(srcCss, destCss, { recursive: true, force: true });
+  console.log('Copied assets/css to dist/assets/css');
 }
