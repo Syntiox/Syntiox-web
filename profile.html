@@ -6,557 +6,29 @@
   <title>Profile | Syntiox</title>
   <meta name="description" content="View this profile on Syntiox." />
   <meta name="theme-color" content="#0071e3" />
-
   <!-- Preload fonts to avoid FOUT -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <style>
-    /* ═══════════════════════════════════════════════
-       CSS CUSTOM PROPERTIES (changed by JS at runtime)
-    ═══════════════════════════════════════════════ */
-    :root {
-      --pg-bg:           #f5f5f7;
-      --pg-text:         #1d1d1f;
-      --pg-text2:        #6e6e73;
-      --pg-link-bg:      #ffffff;
-      --pg-link-hover:   rgba(0,0,0,0.04);
-      --pg-link-border:  rgba(0,0,0,0.1);
-      --pg-link-text:    #1d1d1f;
-      --pg-badge-bg:     rgba(0,0,0,0.06);
-      --pg-badge-text:   #6e6e73;
-      --pg-shadow:       0 2px 16px rgba(0,0,0,0.07);
-      --pg-accent:       #0071e3;
-      --pg-accent-rgb:   0,113,227;
-      --pg-font:         'Inter', sans-serif;
-      --t: 0.22s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    /* ═══════════════════════════════════════════════
-       TEMPLATES — set via body[data-template="X"]
-    ═══════════════════════════════════════════════ */
-
-    /* Clean */
-    body[data-template="clean"] {
-      --pg-bg:#f5f5f7; --pg-text:#1d1d1f; --pg-text2:#6e6e73;
-      --pg-link-bg:#fff; --pg-link-hover:#f0f0f2; --pg-link-border:rgba(0,0,0,0.1); --pg-link-text:#1d1d1f;
-      --pg-badge-bg:rgba(0,0,0,0.06); --pg-badge-text:#6e6e73; --pg-shadow:0 2px 16px rgba(0,0,0,0.07);
-    }
-
-    /* Dark Glass */
-    body[data-template="dark-glass"] {
-      --pg-bg:#0d0d1a; --pg-text:#f0f0ff; --pg-text2:rgba(240,240,255,0.55);
-      --pg-link-bg:rgba(255,255,255,0.07); --pg-link-hover:rgba(255,255,255,0.13);
-      --pg-link-border:rgba(255,255,255,0.1); --pg-link-text:#f0f0ff;
-      --pg-badge-bg:rgba(255,255,255,0.06); --pg-badge-text:rgba(240,240,255,0.4);
-      --pg-shadow:0 8px 32px rgba(0,0,0,0.4);
-    }
-    body[data-template="dark-glass"]::before {
-      content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background:radial-gradient(ellipse 100% 60% at 50% -5%, rgba(var(--pg-accent-rgb),0.2) 0%, transparent 65%);
-    }
-
-    /* Aurora */
-    body[data-template="aurora"] {
-      --pg-bg:#060d1f; --pg-text:#e8f4fd; --pg-text2:rgba(200,230,255,0.6);
-      --pg-link-bg:rgba(255,255,255,0.07); --pg-link-hover:rgba(255,255,255,0.12);
-      --pg-link-border:rgba(100,180,255,0.2); --pg-link-text:#e8f4fd;
-      --pg-badge-bg:rgba(255,255,255,0.05); --pg-badge-text:rgba(200,230,255,0.4);
-      --pg-shadow:0 8px 40px rgba(0,0,0,0.5);
-    }
-    body[data-template="aurora"]::before {
-      content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background:
-        radial-gradient(ellipse 60% 50% at 20% 70%, rgba(0,210,150,0.22) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 40% at 80% 20%, rgba(var(--pg-accent-rgb),0.28) 0%, transparent 55%),
-        radial-gradient(ellipse 70% 50% at 50% 90%, rgba(99,102,241,0.18) 0%, transparent 60%);
-      animation: aurora-move 10s ease-in-out infinite alternate;
-    }
-    body[data-animations="off"][data-template="aurora"]::before { animation: none; }
-    @keyframes aurora-move {
-      from { opacity:0.8; transform:scale(1); }
-      to   { opacity:1;   transform:scale(1.06); }
-    }
-
-    /* Neon */
-    body[data-template="neon"] {
-      --pg-bg:#050505; --pg-text:#ffffff; --pg-text2:rgba(255,255,255,0.45);
-      --pg-link-bg:rgba(10,10,10,0.7); --pg-link-hover:rgba(25,25,25,0.9);
-      --pg-link-border:rgba(var(--pg-accent-rgb),0.5); --pg-link-text:#fff;
-      --pg-badge-bg:rgba(255,255,255,0.04); --pg-badge-text:rgba(255,255,255,0.3);
-      --pg-shadow:0 0 0 transparent;
-    }
-
-    /* Paper */
-    body[data-template="paper"] {
-      --pg-bg:#faf7f0; --pg-text:#2c2416; --pg-text2:#8b7355;
-      --pg-link-bg:#fff; --pg-link-hover:#f5f0e6; --pg-link-border:rgba(139,115,85,0.2); --pg-link-text:#2c2416;
-      --pg-badge-bg:rgba(139,115,85,0.08); --pg-badge-text:#8b7355; --pg-shadow:0 2px 12px rgba(44,36,22,0.08);
-    }
-
-    /* Brand */
-    body[data-template="brand"] {
-      --pg-bg:var(--pg-accent); --pg-text:#ffffff; --pg-text2:rgba(255,255,255,0.72);
-      --pg-link-bg:rgba(255,255,255,0.95); --pg-link-hover:#ffffff;
-      --pg-link-border:transparent; --pg-link-text:#1d1d1f;
-      --pg-badge-bg:rgba(0,0,0,0.15); --pg-badge-text:rgba(255,255,255,0.65);
-      --pg-shadow:0 4px 20px rgba(0,0,0,0.18);
-    }
-    body[data-template="brand"] .link-icon { background: rgba(0,0,0,0.2) !important; }
-
-    /* Minimal */
-    body[data-template="minimal"] {
-      --pg-bg:#ffffff; --pg-text:#111; --pg-text2:#888;
-      --pg-link-bg:transparent; --pg-link-hover:rgba(0,0,0,0.03);
-      --pg-link-border:rgba(0,0,0,0.13); --pg-link-text:#111;
-      --pg-badge-bg:rgba(0,0,0,0.04); --pg-badge-text:#999; --pg-shadow:none;
-    }
-
-    /* Gradient */
-    body[data-template="gradient"] {
-      --pg-bg:#16213e; --pg-text:#ffffff; --pg-text2:rgba(255,255,255,0.58);
-      --pg-link-bg:rgba(255,255,255,0.1); --pg-link-hover:rgba(255,255,255,0.17);
-      --pg-link-border:rgba(255,255,255,0.14); --pg-link-text:#fff;
-      --pg-badge-bg:rgba(255,255,255,0.06); --pg-badge-text:rgba(255,255,255,0.38);
-      --pg-shadow:0 8px 32px rgba(0,0,0,0.28);
-    }
-    body[data-template="gradient"]::before {
-      content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background: linear-gradient(135deg, #16213e 0%, #0f3460 50%, #533483 100%);
-    }
-
-    /* ✨ Glassmorphism */
-    body[data-template="glassmorphism"] {
-      --pg-bg:#1a1a2e; --pg-text:#e8e8ff; --pg-text2:rgba(220,220,255,0.55);
-      --pg-link-bg:rgba(255,255,255,0.08); --pg-link-hover:rgba(255,255,255,0.15);
-      --pg-link-border:rgba(255,255,255,0.12); --pg-link-text:#e8e8ff;
-      --pg-badge-bg:rgba(255,255,255,0.06); --pg-badge-text:rgba(220,220,255,0.4);
-      --pg-shadow:0 8px 32px rgba(0,0,0,0.4);
-    }
-    body[data-template="glassmorphism"]::before {
-      content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background:
-        radial-gradient(ellipse 80% 60% at 20% 30%, rgba(99,102,241,0.28) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(var(--pg-accent-rgb),0.22) 0%, transparent 55%),
-        linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    }
-    body[data-template="glassmorphism"] .link-item {
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
-
-    /* 🕹️ Retro */
-    body[data-template="retro"] {
-      --pg-bg:#1a0a2e; --pg-text:#f0e6ff; --pg-text2:rgba(200,180,255,0.6);
-      --pg-link-bg:rgba(30,15,50,0.8); --pg-link-hover:rgba(50,25,70,0.9);
-      --pg-link-border:rgba(var(--pg-accent-rgb),0.6); --pg-link-text:#f0e6ff;
-      --pg-badge-bg:rgba(255,255,255,0.05); --pg-badge-text:rgba(200,180,255,0.4);
-      --pg-shadow:0 0 20px rgba(var(--pg-accent-rgb),0.3);
-    }
-    body[data-template="retro"]::before {
-      content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
-      background:
-        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px),
-        linear-gradient(135deg, #1a0a2e 0%, #0d0520 100%);
-    }
-    body[data-template="retro"] .display-name { font-family: 'JetBrains Mono', monospace !important; }
-    body[data-template="retro"] .link-item {
-      border-left: 3px solid var(--pg-accent);
-      border-radius: 0 8px 8px 0 !important;
-    }
-
-    /* ═══════════════════════════════════════════════
-       ANIMATIONS OFF
-    ═══════════════════════════════════════════════ */
-    body[data-animations="off"] *,
-    body[data-animations="off"] *::before,
-    body[data-animations="off"] *::after {
-      animation-duration: 0.001ms !important;
-      transition-duration: 0.001ms !important;
-    }
-
-    /* ═══════════════════════════════════════════════
-       BASE RESET & LAYOUT
-    ═══════════════════════════════════════════════ */
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { font-size:16px; }
-    body {
-      font-family: var(--pg-font);
-      background: var(--pg-bg);
-      color: var(--pg-text);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-      transition: background 0.3s, color 0.3s;
-      position: relative;
-    }
-    a { text-decoration: none; color: inherit; }
-
-    /* ── Banner ── */
-    .profile-banner {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      display: block;
-      position: relative;
-      z-index: 0;
-    }
-    @media (max-width:560px) {
-      .profile-banner { height: 120px; }
-    }
-
-    .page-wrap {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 48px 16px 80px;
-    }
-    .page-wrap.has-banner { padding-top: 24px; }
-    
-    /* ── Avatar Overlap Cover Photo ── */
-    body[data-avatar-overlap="true"] .page-wrap.has-banner { padding-top: 0; }
-    body[data-avatar-overlap="true"] .page-wrap.has-banner .profile-header {
-      margin-top: -54px;
-    }
-    body[data-avatar-overlap="true"] .page-wrap.has-banner .avatar-wrap {
-      /* Add some visual pop if overlapping */
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
-    }
-
-    .profile-card {
-      width: 100%;
-      max-width: 560px;
-      animation: fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both;
-    }
-    body[data-animations="off"] .profile-card { animation: none; }
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(18px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    /* ─── Edit Profile button (owner only) ── */
-    .edit-profile-bar {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 12px;
-    }
-    .edit-profile-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 16px;
-      background: rgba(0,0,0,0.55);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: white;
-      border-radius: 9999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      font-family: var(--pg-font);
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-    .edit-profile-btn:hover { background: rgba(0,0,0,0.75); }
-
-    /* ═══════════════════════════════════════════════
-       HEADER / AVATAR — layout variants
-    ═══════════════════════════════════════════════ */
-    .profile-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    body[data-layout="left"] .profile-header { align-items: flex-start; text-align: left; }
-
-    /* Avatar position */
-    body[data-avatar-pos="left"]   .profile-header { align-items: flex-start; }
-    body[data-avatar-pos="center"] .profile-header { align-items: center; }
-    body[data-avatar-pos="right"]  .profile-header { align-items: flex-end; }
-
-    /* Avatar wrap & ring */
-    .avatar-wrap { position:relative; display:inline-block; margin-bottom:12px; }
-    .avatar {
-      display: block;
-      width: 96px; height: 96px;
-      object-fit: cover;
-      border: 3px solid rgba(var(--pg-accent-rgb),0.25);
-      background: var(--pg-link-bg);
-      transition: all 0.3s;
-    }
-    .avatar-ring {
-      position: absolute; inset: -5px;
-      border: 2px solid var(--pg-accent);
-      opacity: 0.35;
-      animation: ring-pulse 3s ease-in-out infinite;
-      pointer-events: none;
-    }
-    body[data-animations="off"] .avatar-ring { animation: none; }
-    @keyframes ring-pulse {
-      0%,100% { opacity:0.25; transform:scale(1); }
-      50%      { opacity:0.55; transform:scale(1.04); }
-    }
-
-    /* Avatar sizes */
-    body[data-avatar-size="sm"] .avatar { width:64px;  height:64px; }
-    body[data-avatar-size="md"] .avatar { width:96px;  height:96px; }
-    body[data-avatar-size="lg"] .avatar { width:128px; height:128px; }
-
-    /* Avatar shapes */
-    body[data-avatar-shape="circle"]  .avatar,
-    body[data-avatar-shape="circle"]  .avatar-ring  { border-radius:50%; }
-    body[data-avatar-shape="square"]  .avatar        { border-radius:10px; }
-    body[data-avatar-shape="square"]  .avatar-ring   { border-radius:14px; }
-    body[data-avatar-shape="rounded"] .avatar        { border-radius:24px; }
-    body[data-avatar-shape="rounded"] .avatar-ring   { border-radius:28px; }
-
-    /* Text */
-    .display-name {
-      font-size: 1.7rem; font-weight: 800;
-      letter-spacing: -0.03em; line-height: 1.15;
-      color: var(--pg-text); margin-bottom: 4px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .username-handle { font-size:0.875rem; color:var(--pg-text2); font-weight:500; margin-bottom:8px; }
-    .bio { font-size:0.9rem; color:var(--pg-text2); line-height:1.7; max-width:420px; margin-bottom:6px; }
-    body[data-layout="left"] .bio { max-width:100%; }
-
-    /* ── Verified badge ── */
-    .verified-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px; height: 22px;
-      background: var(--pg-accent);
-      color: white;
-      border-radius: 50%;
-      font-size: 0.6rem;
-      flex-shrink: 0;
-    }
-
-    /* Font variants */
-    body[data-font="inter"]    { --pg-font:'Inter',sans-serif; }
-    body[data-font="grotesk"]  { --pg-font:'Space Grotesk',sans-serif; }
-    body[data-font="mono"]     { --pg-font:'JetBrains Mono','Fira Code',monospace; }
-    body[data-font="playfair"] { --pg-font:'Playfair Display',serif; }
-    body[data-font="playfair"] .display-name { font-style:italic; letter-spacing:-0.01em; }
-
-    /* ── Stats ── */
-    .profile-stats { display:flex; gap:20px; margin:8px 0; flex-wrap:wrap; }
-    body[data-layout="center"] .profile-stats { justify-content:center; }
-    body[data-avatar-pos="center"] .profile-stats { justify-content:center; }
-    .stat-value { font-size:1rem; font-weight:800; color:var(--pg-text); }
-    .stat-label { font-size:0.65rem; color:var(--pg-text2); font-weight:700; text-transform:uppercase; letter-spacing:0.06em; }
-
-    /* ── Social icons ── */
-    .social-row-wrap {
-      width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      margin-bottom: 16px;
-    }
-    .social-row-wrap::-webkit-scrollbar { display: none; }
-    .social-icons-row {
-      display: flex;
-      gap: 7px;
-      padding: 4px 2px;
-      flex-wrap: wrap;
-    }
-    body[data-layout="center"]       .social-icons-row { justify-content: center; }
-    body[data-avatar-pos="center"]   .social-icons-row { justify-content: center; }
-    body[data-avatar-pos="right"]    .social-icons-row { justify-content: flex-end; }
-    .social-ic {
-      width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      color: white; font-size: 0.82rem; text-decoration: none;
-      transition: all var(--t);
-    }
-    .social-ic:hover { transform: translateY(-3px) scale(1.1); box-shadow: 0 5px 14px rgba(0,0,0,0.22); }
-    body[data-animations="off"] .social-ic:hover { transform: none; }
-
-    /* ── Share bar ── */
-    .share-bar { display:flex; gap:7px; margin-bottom:20px; flex-wrap:wrap; }
-    body[data-layout="center"]     .share-bar { justify-content:center; }
-    body[data-avatar-pos="center"] .share-bar { justify-content:center; }
-    body[data-avatar-pos="right"]  .share-bar { justify-content:flex-end; }
-    .share-btn {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:7px 15px; border-radius:9999px;
-      font-size:0.78rem; font-weight:600; font-family:inherit;
-      cursor:pointer; border:1px solid var(--pg-link-border);
-      background:var(--pg-link-bg); color:var(--pg-text2);
-      transition:all var(--t);
-    }
-    .share-btn:hover { background:var(--pg-link-hover); color:var(--pg-text); transform:translateY(-1px); }
-    body[data-animations="off"] .share-btn:hover { transform:none; }
-
-    /* ═══════════════════════════════════════════════
-       LINKS — base styles
-    ═══════════════════════════════════════════════ */
-    .links-section { display:flex; flex-direction:column; gap:9px; margin-bottom:24px; }
-
-    .link-item {
-      display: flex; align-items: center; gap: 12px;
-      padding: 12px 16px;
-      background: var(--pg-link-bg);
-      border: 1px solid var(--pg-link-border);
-      border-radius: 14px;
-      text-decoration: none; color: var(--pg-link-text);
-      font-weight: 600; font-size: 0.9rem; font-family: inherit;
-      cursor: pointer; transition: all var(--t);
-      position: relative; overflow: hidden;
-    }
-    .link-item::before {
-      content:''; position:absolute; inset:0;
-      background: var(--pg-link-hover); opacity:0; transition:opacity var(--t);
-    }
-    .link-item:hover::before { opacity:1; }
-    .link-item:hover { transform:translateY(-2px); box-shadow:var(--pg-shadow); }
-    .link-item:active { transform:translateY(0); }
-    body[data-animations="off"] .link-item:hover { transform:none; }
-
-    .link-icon {
-      width:32px; height:32px; border-radius:8px;
-      background: var(--pg-accent);
-      display:flex; align-items:center; justify-content:center;
-      color:white; font-size:0.85rem; flex-shrink:0;
-      position:relative; z-index:1;
-    }
-    .link-title { flex:1; position:relative; z-index:1; }
-    .link-arrow { color:var(--pg-text2); font-size:0.72rem; position:relative; z-index:1; transition:transform var(--t); }
-    .link-item:hover .link-arrow { transform:translateX(3px); }
-    body[data-animations="off"] .link-item:hover .link-arrow { transform:none; }
-
-    /* ═══════════════════════════════════════════════
-       LINK STYLE VARIANTS
-    ═══════════════════════════════════════════════ */
-
-    body[data-link-style="pill"] .link-item { border-radius:9999px; padding:12px 20px; }
-    body[data-link-style="pill"] .link-icon  { border-radius:9999px; }
-
-    body[data-link-style="card"] .link-item { border-radius:16px; }
-
-    body[data-link-style="outline"] .link-item {
-      border-radius:9999px;
-      background:transparent !important;
-      border:2px solid var(--pg-accent);
-      color:var(--pg-accent);
-    }
-    body[data-link-style="outline"] .link-item::before { display:none; }
-    body[data-link-style="outline"] .link-item:hover {
-      background:var(--pg-accent) !important;
-      color:#fff;
-      box-shadow:0 4px 20px rgba(var(--pg-accent-rgb),0.35);
-    }
-    body[data-link-style="outline"] .link-icon {
-      background:rgba(var(--pg-accent-rgb),0.15) !important;
-      color:var(--pg-accent); border-radius:9999px;
-    }
-    body[data-link-style="outline"] .link-item:hover .link-icon { background:rgba(255,255,255,0.25) !important; color:#fff; }
-
-    body[data-link-style="soft"] .link-item {
-      border-radius:16px;
-      background:rgba(var(--pg-accent-rgb),0.1) !important;
-      border:none;
-    }
-    body[data-link-style="soft"] .link-item::before { background:rgba(var(--pg-accent-rgb),0.07); }
-    body[data-link-style="soft"] .link-icon { border-radius:10px; }
-
-    body[data-link-style="minimal"] .link-item {
-      background:transparent !important;
-      border:none !important;
-      border-bottom:1.5px solid var(--pg-link-border) !important;
-      border-radius:0 !important;
-      padding:11px 0;
-    }
-    body[data-link-style="minimal"] .link-item::before { display:none; }
-    body[data-link-style="minimal"] .link-item:hover { transform:none; box-shadow:none; border-bottom-color:var(--pg-accent) !important; }
-    body[data-link-style="minimal"] .link-icon { display:none !important; }
-
-    body[data-link-style="neon"] .link-item {
-      background:transparent !important;
-      border:1.5px solid var(--pg-accent);
-      border-radius:9999px;
-      box-shadow:0 0 8px rgba(var(--pg-accent-rgb),0.3), inset 0 0 8px rgba(var(--pg-accent-rgb),0.04);
-    }
-    body[data-link-style="neon"] .link-item::before { display:none; }
-    body[data-link-style="neon"] .link-item:hover {
-      box-shadow:0 0 24px rgba(var(--pg-accent-rgb),0.65), inset 0 0 16px rgba(var(--pg-accent-rgb),0.1);
-      transform:translateY(-2px);
-    }
-    body[data-link-style="neon"] .link-icon {
-      background:rgba(var(--pg-accent-rgb),0.12) !important;
-      color:var(--pg-accent); border-radius:9999px;
-    }
-
-    body[data-template="neon"] .link-item { box-shadow:0 0 8px rgba(var(--pg-accent-rgb),0.25); }
-    body[data-template="neon"] .link-item:hover { box-shadow:0 0 22px rgba(var(--pg-accent-rgb),0.55); }
-
-    /* Icon visibility */
-    body[data-link-icon="false"] .link-icon { display:none !important; }
-
-    /* ── Syntiox badge ── */
-    .syntiox-badge { text-align:center; padding-top:12px; }
-    body[data-avatar-pos="left"]  .syntiox-badge { text-align:left; }
-    body[data-avatar-pos="right"] .syntiox-badge { text-align:right; }
-    body[data-layout="left"]      .syntiox-badge { text-align:left; }
-    .syntiox-badge a {
-      display:inline-flex; align-items:center; gap:6px;
-      padding:7px 14px; background:var(--pg-badge-bg); color:var(--pg-badge-text);
-      border-radius:9999px; font-size:0.75rem; font-weight:600;
-      font-family:inherit; transition:all var(--t);
-    }
-    .syntiox-badge a:hover { background:var(--pg-link-hover); color:var(--pg-text); }
-    .syntiox-badge img { width:14px; height:14px; object-fit:contain; }
-
-    /* ── Loader / Error ── */
-    .loader-wrap {
-      display:flex; flex-direction:column; align-items:center;
-      justify-content:center; min-height:70vh; gap:14px; color:var(--pg-text2);
-      font-size:0.875rem; font-family:'Inter',sans-serif;
-    }
-    .spinner {
-      width:36px; height:36px;
-      border:3px solid rgba(var(--pg-accent-rgb),0.15);
-      border-top-color:var(--pg-accent);
-      border-radius:50%; animation:spin 0.75s linear infinite;
-    }
-    @keyframes spin { to { transform:rotate(360deg); } }
-    .error-box { text-align:center; padding:48px 24px; color:var(--pg-text2); max-width:380px; }
-    .error-code { font-size:3.5rem; font-weight:800; letter-spacing:-0.04em; color:var(--pg-text); margin-bottom:8px; }
-    .error-box p { font-size:0.9rem; margin-bottom:20px; line-height:1.65; }
-    .error-box a { color:var(--pg-accent); text-decoration:underline; font-weight:600; }
-
-    @media (max-width:560px) {
-      .page-wrap { padding:32px 12px 60px; }
-      .display-name { font-size:1.45rem; }
-      body[data-avatar-size="lg"] .avatar { width:96px; height:96px; }
-    }
-  </style>
+    <link rel="stylesheet" href="/assets/css/profile.css">
 </head>
 <body data-template="clean" data-layout="center" data-avatar-size="md"
       data-avatar-shape="circle" data-avatar-pos="center"
       data-link-style="pill" data-link-icon="true" data-font="inter"
       data-animations="on">
-
   <div id="root">
     <div class="loader-wrap">
       <div class="spinner"></div>
       <span>Loading…</span>
     </div>
   </div>
-
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
   <script>
   (function() {
     'use strict';
-
     // ── Firebase ─────────────────────────────────
     const FIREBASE_CONFIG = {
       apiKey: "AIzaSyDCQ1yq4ySr0HC4j1ksSWR7lUdPHvD1UCI",
@@ -568,7 +40,6 @@
       measurementId: "G-NXWXP64BLR"
     };
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-
     // ── Social icon detection ─────────────────────
     const ICON_MAP = [
       { m:/youtube\.com|youtu\.be/i,   i:'fa-brands fa-youtube',    c:'#ff0000' },
@@ -596,7 +67,6 @@
       for (const e of ICON_MAP) if (e.m.test(url)) return { icon: e.i, color: e.c };
       return { icon: 'fa-solid fa-link', color: accent || '#0071e3' };
     }
-
     // ── Helpers ───────────────────────────────────
     function hexToRgb(hex) {
       hex = hex.replace('#','');
@@ -613,7 +83,6 @@
     function esc(s) {
       return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
-
     // ── Apply appearance settings ─────────────────
     function applyAppearance(ap) {
       const b = document.body;
@@ -627,11 +96,9 @@
       b.dataset.font       = ap.fontFamily  || 'inter';
       b.dataset.animations = (ap.enableAnimations === false) ? 'off' : 'on';
       b.dataset.avatarOverlap = (ap.avatarOverlap === true) ? 'true' : 'false';
-
       const accent = ap.accentColor || '#0071e3';
       b.style.setProperty('--pg-accent', accent);
       b.style.setProperty('--pg-accent-rgb', hexToRgb(accent));
-
       // Background override
       if (ap.bgType === 'solid' && ap.bgColor && ap.template !== 'brand') {
         b.style.setProperty('--pg-bg', ap.bgColor);
@@ -639,7 +106,6 @@
       if (ap.bgType === 'gradient' && ap.bgGradient) {
         b.style.background = ap.bgGradient;
       }
-
       // Text color override
       if (ap.textColor) {
         b.style.setProperty('--pg-text', ap.textColor);
@@ -648,23 +114,18 @@
         b.style.setProperty('--pg-badge-text', ap.textColor);
       }
     }
-
     // ── Render profile ────────────────────────────
     function render(userData) {
       const {
         displayName, username, bio, photoURL, bannerURL,
         links = [], appearance = {}, coins, social = {}, verified = false, profileViews = 0
       } = userData;
-
       applyAppearance(appearance);
-
       document.title = `${displayName || username} | Syntiox`;
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) metaDesc.content = bio || `${displayName||username}'s profile on Syntiox`;
-
       const accent  = appearance.accentColor || '#0071e3';
       const pageUrl = `https://syntiox.top/u/${username}`;
-
       // 📊 Fire analytics view event (non-blocking)
       if (userData.uid) {
         fetch('https://account.syntiox.top/api/analytics', {
@@ -673,7 +134,6 @@
           body: JSON.stringify({ uid: userData.uid, type: 'view' }),
         }).catch(() => {});
       }
-
       // Social platforms config
       const SOCIAL_DEFS = [
         { id:'email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:',                   fullValue:true  },
@@ -692,16 +152,13 @@
         { id:'snapchat',    icon:'fa-brands fa-snapchat',      color:'#ffcc00', prefix:'https://snapchat.com/add/', fullValue:false },
         { id:'reddit',      icon:'fa-brands fa-reddit',        color:'#ff4500', prefix:'https://reddit.com/',       fullValue:false },
       ];
-
       const socialHtml = SOCIAL_DEFS.filter(s => social[s.id])
         .map(s => {
           const rawUrl = `${s.prefix}${social[s.id]}`;
           const safeUid = userData.uid || '';
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${safeUid}&key=Social%3A%20${encodeURIComponent(s.label || s.id)}&url=${encodeURIComponent(rawUrl)}`;
-          
           return `<a class="social-ic" href="${esc(redirectUrl)}" style="background:${s.color};" target="_blank" rel="noopener" title="${s.id}"><i class="${s.icon}"></i></a>`;
         }).join('');
-
       // Links HTML with server-side redirect tracking
       const linksHtml = links.length > 0 ? `
         <div class="links-section">
@@ -710,7 +167,6 @@
             const safeTitle = link.title || 'Untitled Link';
             const safeUid   = userData.uid || '';
             const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${safeUid}&key=${encodeURIComponent(safeTitle)}&url=${encodeURIComponent(link.url)}`;
-            
             return `
               <a class="link-item" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
                 <span class="link-icon" style="background:${color};">
@@ -721,7 +177,6 @@
               </a>`;
           }).join('')}
         </div>` : '';
-
       // Short currency formatter (e.g. 1.5K, 50B)
       function formatShortCurrency(value) {
         if (!value) return "0";
@@ -730,17 +185,14 @@
         if (value >= 1e3) return (value / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
         return Number(value).toFixed(2).replace(/\.00$/, ''); // show max 2 decimal places if less than 1K
       }
-
       // Stats (wallet, coins, views)
       const showViews = appearance.showViewCount !== false;
       const showWallet = appearance.showWalletBalance === true;
       const showCoins = appearance.showCoinsBalance !== false;
       const viewsVal  = userData.profileViews || 0;
       const walletVal = userData.wallet_balance || 0;
-      
       // We do not highlight "USD $" here since the user clarified that's for receipts only.
       const walletFormatted = `USD $${formatShortCurrency(walletVal)}`;
-
       const statsHtml = ((coins != null && showCoins) || showViews || showWallet) ? `
         <div class="profile-stats">
           ${showWallet ? `<div class="stat-item"><div class="stat-value">${walletFormatted}</div><div class="stat-label">Balance</div></div>` : ''}
@@ -751,21 +203,17 @@
       const verifiedBadge = verified
         ? `<span class="verified-badge" title="Verified"><i class="fa-solid fa-check"></i></span>`
         : '';
-
       // Banner
       const bannerHtml = bannerURL
         ? `<img class="profile-banner" src="${esc(bannerURL)}" alt="Banner" referrerpolicy="no-referrer" />`
         : '';
-
       // Check if owner (via localStorage uid match)
       const storedUid = localStorage.getItem('syntiox_uid');
       const isOwner   = storedUid && userData.uid === storedUid;
       const editBtn   = isOwner
         ? `<div class="edit-profile-bar"><a class="edit-profile-btn" href="https://account.syntiox.top"><i class="fa-solid fa-pencil"></i> Edit Profile</a></div>`
         : '';
-
       const hasBanner = !!bannerURL;
-
       document.getElementById('root').innerHTML = `
         ${bannerHtml}
         <div class="page-wrap${hasBanner ? ' has-banner' : ''}">
@@ -785,12 +233,10 @@
               ${bio       ? `<p class="bio">${esc(bio)}</p>` : ''}
               ${statsHtml}
             </div>
-
             ${socialHtml ? `
             <div class="social-row-wrap">
               <div class="social-icons-row">${socialHtml}</div>
             </div>` : ''}
-
             <div class="share-bar">
               <button class="share-btn" id="btn-copy-link">
                 <i class="fa-solid fa-link"></i> Copy Link
@@ -799,12 +245,9 @@
                 ? `<button class="share-btn" id="btn-share"><i class="fa-solid fa-arrow-up-from-bracket"></i> Share</button>`
                 : ''}
             </div>
-
             ${linksHtml}
-
           </div>
         </div>
-
         <div class="syntiox-badge">
           <a href="https://syntiox.top" target="_blank" rel="noopener">
             <img src="https://syntiox.top/assets/logo-IcotzT0R.png" alt="Syntiox" />
@@ -812,7 +255,6 @@
           </a>
         </div>
       </div>`;
-
       // Share handlers
       document.getElementById('btn-copy-link').addEventListener('click', () => {
         navigator.clipboard.writeText(pageUrl).then(() => {
@@ -828,7 +270,6 @@
         );
       }
     }
-
     function renderError(code, msg) {
       document.getElementById('root').innerHTML = `
         <div class="page-wrap">
@@ -841,31 +282,25 @@
           </div>
         </div>`;
     }
-
     // ── Entry ─────────────────────────────────────
     async function main() {
       const params    = new URLSearchParams(window.location.search);
       const pathMatch = window.location.pathname.match(/^\/u\/([^/]+)/);
       const handle    = (pathMatch && pathMatch[1]) || params.get('handle') || params.get('u') || '';
-
       if (!handle) { renderError('404','No username specified.'); return; }
-
       try {
         const db    = firebase.firestore();
         const uSnap = await db.collection('usernames').doc(handle.toLowerCase()).get();
         if (!uSnap.exists) { renderError('404',`@${esc(handle)} doesn't exist on Syntiox.`); return; }
-
         const snap = await db.collection('users').doc(uSnap.data().uid).get();
         if (!snap.exists)               { renderError('404','Profile not found.'); return; }
         if (snap.data().isPublic === false) { renderError('🔒','This profile is private.'); return; }
-
         render({ ...snap.data(), uid: snap.id });
       } catch(err) {
         console.error('[Profile]', err);
         renderError('⚠','Could not load profile. Try again later.');
       }
     }
-
     document.readyState === 'loading'
       ? document.addEventListener('DOMContentLoaded', main)
       : main();
