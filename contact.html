@@ -5,108 +5,573 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact — Syntiox</title>
     <meta name="description" content="Get in touch with Syntiox. We engineer elegant solutions at the intersection of AI, Advanced Security, and Scalable Architecture.">
-    <link rel="canonical" href="https://syntiox.top/contact.html">
+    <link rel="canonical" href="https://syntiox.top/contact">
     <!-- Open Graph -->
     <meta property="og:title" content="Contact — Syntiox">
-    <meta property="og:description" content="Get in touch with Syntiox. We engineer elegant solutions at the intersection of AI, Advanced Security, and Scalable Architecture.">
+    <meta property="og:description" content="Have an idea, a project, or a problem? We'd love to talk.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://syntiox.top/contact.html">
+    <meta property="og:url" content="https://syntiox.top/contact">
     <meta property="og:image" content="https://syntiox.top/assets/image/logo.png">
     <meta property="og:site_name" content="Syntiox">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <style>
+        /* ── Contact Page ── */
+        .contact-page {
+            min-height: 100vh;
+            padding-top: var(--nav-h);
+            background: var(--white);
+        }
+
+        /* Hero section */
+        .contact-hero {
+            padding: 80px 24px 64px;
+            text-align: center;
+            max-width: var(--max-w);
+            margin: 0 auto;
+        }
+
+        .contact-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 24px;
+        }
+
+        .contact-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .contact-hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .contact-hero-title span {
+            background: linear-gradient(135deg, #0071e3 0%, #6366f1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .contact-hero-sub {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Main layout */
+        .contact-body {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 24px 96px;
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+        /* Left info panel */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: sticky;
+            top: calc(var(--nav-h) + 32px);
+        }
+
+        .contact-info-heading {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+            margin-bottom: 8px;
+        }
+
+        .contact-info-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Contact channels */
+        .contact-channels {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contact-channel {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all var(--transition);
+            background: var(--white);
+        }
+
+        .contact-channel:hover {
+            border-color: var(--text-primary);
+            background: var(--surface);
+            transform: translateX(4px);
+        }
+
+        .channel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .channel-icon--github { background: #1d1d1f; color: #fff; }
+        .channel-icon--youtube { background: #ff0000; color: #fff; }
+        .channel-icon--whatsapp { background: #25D366; color: #fff; }
+        .channel-icon--discord { background: #5865F2; color: #fff; }
+
+        .channel-info { flex: 1; }
+
+        .channel-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 2px;
+        }
+
+        .channel-handle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .channel-arrow {
+            color: var(--text-tertiary);
+            transition: transform var(--transition);
+        }
+
+        .contact-channel:hover .channel-arrow {
+            transform: translateX(4px);
+        }
+
+        /* Response time badge */
+        .response-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--radius-md);
+        }
+
+        .response-badge-icon {
+            font-size: 1.2rem;
+        }
+
+        .response-badge-text {
+            font-size: 0.85rem;
+            color: #166534;
+            font-weight: 500;
+        }
+
+        /* Form card */
+        .contact-form-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-card-title {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .form-card-sub {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.825rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            background: var(--white);
+            transition: border-color var(--transition), box-shadow var(--transition);
+            outline: none;
+            width: 100%;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.12);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e6e73' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .form-submit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--text-primary);
+            color: #fff;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .form-submit:hover {
+            background: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .form-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-submit svg {
+            transition: transform var(--transition);
+        }
+
+        .form-submit:hover svg {
+            transform: translateX(3px);
+        }
+
+        /* Success state */
+        .form-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px 20px;
+            gap: 16px;
+        }
+
+        .form-success.active { display: flex; }
+
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .success-sub {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            max-width: 280px;
+            line-height: 1.6;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 768px) {
+            .contact-hero {
+                padding: 48px 20px 40px;
+            }
+
+            .contact-hero-title {
+                font-size: 2.2rem;
+            }
+
+            .contact-body {
+                grid-template-columns: 1fr;
+                gap: 40px;
+                padding: 0 20px 60px;
+            }
+
+            .contact-info {
+                position: static;
+                gap: 28px;
+            }
+
+            .contact-form-card {
+                padding: 28px 24px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- ===== NAVBAR ===== -->
     <nav id="navbar">
         <div class="nav-inner">
-            <a href="index.html" class="nav-logo" id="nav-logo-link">
-                <img src="./assets/image/logo.png" alt="Syntiox" class="nav-logo-img">
+            <a href="/" class="nav-logo" id="nav-logo-link">
+                <img src="/assets/image/logo.png" alt="Syntiox" class="nav-logo-img">
                 <span class="nav-logo-text">Syntiox</span>
             </a>
             <ul class="nav-links" id="nav-links">
-                <li><a href="index.html#hero" class="nav-link">Home</a></li>
-                <li><a href="index.html#products" class="nav-link">Products</a></li>
-                <li><a href="index.html#capabilities" class="nav-link">Capabilities</a></li>
-                <li><a href="index.html#about" class="nav-link">About</a></li>
-                <li><a href="index.html#community" class="nav-link">Community</a></li>
+                <li><a href="/#hero" class="nav-link">Home</a></li>
+                <li><a href="/#products" class="nav-link">Products</a></li>
+                <li><a href="/#capabilities" class="nav-link">Capabilities</a></li>
+                <li><a href="/#about" class="nav-link">About</a></li>
+                <li><a href="/#community" class="nav-link">Community</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="contact.html" class="nav-cta" id="nav-cta-btn">Get in Touch</a>
+                <a href="/contact" class="nav-cta" id="nav-cta-btn">Get in Touch</a>
                 <button class="hamburger" id="hamburger" aria-label="Toggle menu">
                     <span></span><span></span><span></span>
                 </button>
             </div>
         </div>
     </nav>
+
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" id="mobile-menu">
         <div class="mobile-menu-inner">
-            <a href="index.html#hero" class="mobile-link" onclick="closeMobileMenu()">Home</a>
-            <a href="index.html#products" class="mobile-link" onclick="closeMobileMenu()">Products</a>
-            <a href="index.html#capabilities" class="mobile-link" onclick="closeMobileMenu()">Capabilities</a>
-            <a href="index.html#about" class="mobile-link" onclick="closeMobileMenu()">About</a>
-            <a href="index.html#community" class="mobile-link" onclick="closeMobileMenu()">Community</a>
-            <a href="contact.html" class="mobile-link mobile-cta" onclick="closeMobileMenu()">Get in Touch</a>
+            <a href="/#hero" class="mobile-link" onclick="closeMobileMenu()">Home</a>
+            <a href="/#products" class="mobile-link" onclick="closeMobileMenu()">Products</a>
+            <a href="/#capabilities" class="mobile-link" onclick="closeMobileMenu()">Capabilities</a>
+            <a href="/#about" class="mobile-link" onclick="closeMobileMenu()">About</a>
+            <a href="/#community" class="mobile-link" onclick="closeMobileMenu()">Community</a>
+            <a href="/contact" class="mobile-link mobile-cta" onclick="closeMobileMenu()">Get in Touch</a>
         </div>
     </div>
-    <main>
-        <!-- ===== CONTACT ===== -->
-        <section id="contact">
-            <div class="section-container">
-                <div class="contact-layout">
-                    <div class="contact-left reveal">
-                        <div class="section-eyebrow">Get In Touch</div>
-                        <h2 class="section-title">Ready to build<br>something great?</h2>
-                        <p class="contact-body">Have an idea, a project, or a problem that needs solving? We'd love to talk. Reach out and let's build the future together.</p>
-                        <div class="contact-links">
-                            <a href="https://github.com/Syntiox" target="_blank" class="contact-social-link" id="contact-github">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                                GitHub
-                            </a>
-                            <a href="https://www.youtube.com/@sh4lu_z" target="_blank" class="contact-social-link" id="contact-youtube">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                                YouTube
-                            </a>
-                            <a href="https://whatsapp.com/channel/0029VbCqPsRC1FuEMz7ICY1o" target="_blank" class="contact-social-link" id="contact-whatsapp">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                                WhatsApp
-                            </a>
+
+    <div class="contact-page">
+        <!-- Hero -->
+        <div class="contact-hero reveal">
+            <div class="contact-eyebrow">
+                <span class="contact-eyebrow-dot"></span>
+                We respond fast
+            </div>
+            <h1 class="contact-hero-title">
+                Let's build something<br><span>extraordinary</span>
+            </h1>
+            <p class="contact-hero-sub">
+                Have an idea, a project, or a problem that needs solving? We'd love to hear from you.
+            </p>
+        </div>
+
+        <!-- Main body -->
+        <div class="contact-body">
+            <!-- Left: Info -->
+            <div class="contact-info reveal">
+                <div>
+                    <h2 class="contact-info-heading">Get in touch</h2>
+                    <p class="contact-info-text">
+                        We're a small, focused team that moves fast. Whether it's a collaboration, a product question, or just saying hello — reach out through any of the channels below.
+                    </p>
+                </div>
+
+                <div class="contact-channels">
+                    <a href="https://github.com/Syntiox" target="_blank" class="contact-channel" id="contact-github">
+                        <div class="channel-icon channel-icon--github">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         </div>
-                    </div>
-                    <div class="contact-right reveal" style="transition-delay:0.15s">
-                        <form action="https://formspree.io/f/mwvyvenv" method="POST" class="contact-form" id="contact-form">
-                            <div class="form-group">
-                                <label for="contact-name">Your Name</label>
-                                <input type="text" id="contact-name" name="name" placeholder="John Doe" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contact-email">Email Address</label>
-                                <input type="email" id="contact-email" name="email" placeholder="hello@example.com" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="contact-message">Your Message</label>
-                                <textarea id="contact-message" name="message" placeholder="Tell us about your project..." rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn-primary form-submit" id="contact-submit-btn">
-                                Send Message
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                            </button>
-                        </form>
-                    </div>
+                        <div class="channel-info">
+                            <div class="channel-name">GitHub</div>
+                            <div class="channel-handle">@Syntiox</div>
+                        </div>
+                        <svg class="channel-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+
+                    <a href="https://www.youtube.com/@sh4lu_z" target="_blank" class="contact-channel" id="contact-youtube">
+                        <div class="channel-icon channel-icon--youtube">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </div>
+                        <div class="channel-info">
+                            <div class="channel-name">YouTube</div>
+                            <div class="channel-handle">@sh4lu_z</div>
+                        </div>
+                        <svg class="channel-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+
+                    <a href="https://whatsapp.com/channel/0029VbCqPsRC1FuEMz7ICY1o" target="_blank" class="contact-channel" id="contact-whatsapp">
+                        <div class="channel-icon channel-icon--whatsapp">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                        </div>
+                        <div class="channel-info">
+                            <div class="channel-name">WhatsApp Channel</div>
+                            <div class="channel-handle">Syntiox Community</div>
+                        </div>
+                        <svg class="channel-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+
+                    <a href="https://discord.gg/jTBsHBMB" target="_blank" class="contact-channel" id="contact-discord">
+                        <div class="channel-icon channel-icon--discord">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.079.11 18.1.128 18.113a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+                        </div>
+                        <div class="channel-info">
+                            <div class="channel-name">Discord</div>
+                            <div class="channel-handle">Join our server</div>
+                        </div>
+                        <svg class="channel-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+
+                <div class="response-badge">
+                    <span class="response-badge-icon">⚡</span>
+                    <span class="response-badge-text">We typically respond within 24 hours</span>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <!-- Right: Form -->
+            <div class="contact-form-card reveal" style="transition-delay: 0.15s;">
+                <h2 class="form-card-title">Send us a message</h2>
+                <p class="form-card-sub">Fill out the form below and we'll get back to you shortly.</p>
+
+                <div class="form-success" id="form-success">
+                    <div class="success-icon">✅</div>
+                    <div class="success-title">Message sent!</div>
+                    <p class="success-sub">Thanks for reaching out. We'll get back to you within 24 hours.</p>
+                </div>
+
+                <form action="https://formspree.io/f/mwvyvenv" method="POST" class="contact-form" id="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-name">Your Name</label>
+                            <input type="text" id="contact-name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">Email Address</label>
+                            <input type="email" id="contact-email" name="email" placeholder="hello@example.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-subject">Topic</label>
+                        <select id="contact-subject" name="subject">
+                            <option value="">Select a topic...</option>
+                            <option value="collaboration">Collaboration / Partnership</option>
+                            <option value="product">Product Question</option>
+                            <option value="bug">Bug Report</option>
+                            <option value="feature">Feature Request</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Your Message</label>
+                        <textarea id="contact-message" name="message" placeholder="Tell us about your project or what's on your mind..." required></textarea>
+                    </div>
+                    <button type="submit" class="form-submit" id="contact-submit-btn">
+                        Send Message
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== FOOTER ===== -->
     <footer id="footer">
         <div class="footer-inner">
             <div class="footer-top">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <img src="./assets/image/logo.png" alt="Syntiox" class="footer-logo-img">
+                        <img src="/assets/image/logo.png" alt="Syntiox" class="footer-logo-img">
                         <span class="footer-logo-text">Syntiox</span>
                     </div>
                     <p class="footer-tagline">Building the next generation of elegant technology.</p>
@@ -119,14 +584,12 @@
                         <a href="https://console.api.syntiox.top" target="_blank">API Console</a>
                         <a href="https://gamestore.syntiox.top" target="_blank">Game Store</a>
                         <a href="https://lab.syntiox.top" target="_blank">Lab</a>
-                        <a href="https://syntiox-sync.vercel.app/" target="_blank">Syntiox Sync</a>
-                        <a href="https://ceylex-ai.vercel.app/" target="_blank">Ceylex AI</a>
                     </div>
                     <div class="footer-col">
                         <h4>Company</h4>
-                        <a href="index.html#about">About</a>
-                        <a href="index.html#capabilities">Capabilities</a>
-                        <a href="contact.html">Contact</a>
+                        <a href="/#about">About</a>
+                        <a href="/#capabilities">Capabilities</a>
+                        <a href="/contact">Contact</a>
                         <a href="https://github.com/Syntiox" target="_blank">Open Source</a>
                     </div>
                     <div class="footer-col">
@@ -144,12 +607,47 @@
             </div>
         </div>
     </footer>
-    <script src="./assets/js/script.js"></script>
+
+    <script src="/assets/js/script.js"></script>
+    <script src="/assets/js/ai-chat.js"></script>
     <script>
-        // Trigger scroll animations immediately since it's above the fold
+        // Scroll reveal
         document.addEventListener('DOMContentLoaded', () => {
-            const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(el => el.classList.add('visible'));
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(el => {
+                    if (el.isIntersecting) el.target.classList.add('visible');
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        // AJAX form submission
+        const form = document.getElementById('contact-form');
+        const btn = document.getElementById('contact-submit-btn');
+        const successEl = document.getElementById('form-success');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerHTML = 'Sending... <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>';
+
+            try {
+                const resp = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { Accept: 'application/json' }
+                });
+                if (resp.ok) {
+                    form.style.display = 'none';
+                    successEl.classList.add('active');
+                } else {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Try Again →';
+                }
+            } catch {
+                btn.disabled = false;
+                btn.innerHTML = 'Try Again →';
+            }
         });
     </script>
 </body>
