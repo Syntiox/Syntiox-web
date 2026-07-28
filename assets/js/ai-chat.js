@@ -546,3 +546,26 @@ function playNotificationSound() {
   );
   audio.play().catch((e) => console.error("Audio play blocked:", e));
 }
+
+// --- Mobile Keyboard Fix ---
+if (window.visualViewport) {
+  const handleViewportResize = () => {
+    const win = document.getElementById("chat-window");
+    if (!win || win.style.display === "none") return;
+    if (window.innerWidth > 480) return;
+    
+    // If viewport height is significantly less than window innerHeight, keyboard is likely open
+    const keyboardOpen = window.visualViewport.height < window.innerHeight * 0.75;
+    
+    if (keyboardOpen) {
+      win.style.height = Math.max(200, window.visualViewport.height - 40) + "px";
+      win.style.bottom = "10px";
+    } else {
+      win.style.height = "";
+      win.style.bottom = "";
+    }
+  };
+  
+  window.visualViewport.addEventListener("resize", handleViewportResize);
+  window.visualViewport.addEventListener("scroll", handleViewportResize);
+}
