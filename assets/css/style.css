@@ -1424,6 +1424,30 @@ h1, h2, h3, h4 {
     color: var(--text-primary);
 }
 
+.footer-social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+.footer-social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--surface-secondary, rgba(255,255,255,0.05));
+    color: var(--text-secondary);
+    padding: 0;
+    transition: background var(--transition), color var(--transition), transform var(--transition);
+}
+.footer-social a:hover {
+    background: var(--text-primary);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
 .footer-bottom {
     display: flex;
     justify-content: space-between;
