@@ -1,0 +1,17 @@
+name: Block Merge from Production
+
+on:
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  block-production:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        run: |
+          if [ "${{ github.head_ref }}" == "production" ]; then
+            echo "Error: Pull requests FROM the 'production' branch are not allowed!"
+            exit 1
+          fi
