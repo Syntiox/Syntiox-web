@@ -14,3 +14,5 @@ This repository contains the source code for the official **Syntiox** organizati
 
 ---
 
+
+<!-- Trigger Vercel Build -->
