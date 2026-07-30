@@ -8,3 +8,6 @@ coverage/
 !.env.example
 test/
 test
+
+# Obfuscator generated files
+*.zip
