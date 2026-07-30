@@ -54,28 +54,32 @@ async function run() {
 
   while (true) {
     await new Promise(r => setTimeout(r, 3000));
-    const statusRes = await fetch(`${API_STATUS}/${jobId}`);
-    const statusData = await statusRes.json();
-    
-    if (statusData.status === 'completed') {
-       console.log("[Obfuscator] Obfuscation complete. Downloading...");
-       const downRes = await fetch(`${API_DOWNLOAD}/${jobId}`);
-       if (!downRes.ok) {
-           console.error("Download failed", await downRes.text());
-           process.exit(1);
-       }
-       const arrayBuffer = await downRes.arrayBuffer();
-       writeFileSync('protected.zip', Buffer.from(arrayBuffer));
-       console.log("[Obfuscator] Extracting protected files...");
-       // Extract directly into dist folder
-       execSync('unzip -o protected.zip -d dist');
-       console.log("[Obfuscator] Done! Files overwritten with obfuscated versions.");
-       break;
-    } else if (statusData.status === 'error') {
-       console.error("[Obfuscator] Server error:", statusData.error);
-       process.exit(1);
-    } else {
-       console.log("[Obfuscator] Still processing...");
+    try {
+      const statusRes = await fetch(`${API_STATUS}/${jobId}`);
+      const statusData = await statusRes.json();
+      
+      if (statusData.status === 'completed') {
+         console.log("[Obfuscator] Obfuscation complete. Downloading...");
+         const downRes = await fetch(`${API_DOWNLOAD}/${jobId}`);
+         if (!downRes.ok) {
+             console.error("Download failed", await downRes.text());
+             process.exit(1);
+         }
+         const arrayBuffer = await downRes.arrayBuffer();
+         writeFileSync('protected.zip', Buffer.from(arrayBuffer));
+         console.log("[Obfuscator] Extracting protected files...");
+         // Extract directly into dist folder
+         execSync('unzip -o protected.zip -d dist');
+         console.log("[Obfuscator] Done! Files overwritten with obfuscated versions.");
+         break;
+      } else if (statusData.status === 'error') {
+         console.error("[Obfuscator] Server error:", statusData.error);
+         process.exit(1);
+      } else {
+         console.log("[Obfuscator] Still processing...");
+      }
+    } catch (e) {
+      console.log(`[Obfuscator] Network error during status check (${e.message}), retrying...`);
     }
   }
 }
