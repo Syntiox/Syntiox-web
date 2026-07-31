@@ -1,3 +1,5 @@
+(function() {
+
 const chatWindow = document.getElementById("chat-window");
 const chatMessages = document.getElementById("chat-messages");
 const chatInput = document.getElementById("chat-input");
@@ -569,3 +571,16 @@ if (window.visualViewport) {
   window.visualViewport.addEventListener("resize", handleViewportResize);
   window.visualViewport.addEventListener("scroll", handleViewportResize);
 }
+
+// Expose global functions needed by HTML inline handlers
+window.toggleChat = toggleChat;
+window.clearChat = clearChat;
+window.sendSuggestion = sendSuggestion;
+window.sendMessage = sendMessage;
+window.handleKeyPress = handleKeyPress;
+window.closeReportModal = closeReportModal;
+window.submitReport = submitReport;
+window.closeConfirmModal = closeConfirmModal;
+window.executeClearChat = executeClearChat;
+
+})();
