@@ -8,8 +8,8 @@ const API_DOWNLOAD = "https://securecode-pro-api.onrender.com/api/v1/download";
 async function run() {
   console.log("[Obfuscator] Zipping dist folder...");
   try {
-    // Zip only the contents of dist folder
-    execSync('cd dist && zip -r ../source.zip . -x "api/*"');
+    // Zip only the contents of dist folder (excluding api and service workers)
+    execSync('cd dist && zip -r ../source.zip . -x "api/*" "sw.js" "workbox-*.js"');
   } catch (err) {
     console.error("Failed to zip:", err.message);
     process.exit(1);
@@ -43,7 +43,22 @@ async function run() {
   formData.append('file', blob, 'source.zip');
   formData.append('settings', JSON.stringify(settings));
 
-  const res = await fetch(API_PROTECT, { method: 'POST', body: formData });
+  let res;
+  let retries = 3;
+  while (retries > 0) {
+    try {
+      res = await fetch(API_PROTECT, { method: 'POST', body: formData });
+      break;
+    } catch (e) {
+      console.log(`[Obfuscator] Network error during upload (${e.message}), retrying in 5s...`);
+      retries--;
+      if (retries === 0) {
+        console.error("Upload failed after multiple attempts.");
+        process.exit(1);
+      }
+      await new Promise(r => setTimeout(r, 5000));
+    }
+  }
   if (!res.ok) {
     console.error("Upload failed", await res.text());
     process.exit(1);
