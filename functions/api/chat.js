@@ -5,7 +5,31 @@ export async function onRequest(context) {
   }
 
   try {
+    // 1. Verify Firebase Auth Token
+    const authHeader = context.request.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized: Missing or invalid token" }), { 
+        status: 401, headers: { "Content-Type": "application/json" } 
+      });
+    }
+    const idToken = authHeader.split("Bearer ")[1];
+    const firebaseApiKey = "AIzaSyDCQ1yq4ySr0HC4j1ksSWR7lUdPHvD1UCI";
+
+    const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken })
+    });
+    
+    const verifyData = await verifyRes.json();
+    if (verifyData.error) {
+      return new Response(JSON.stringify({ error: "Unauthorized: Invalid token" }), { 
+        status: 401, headers: { "Content-Type": "application/json" } 
+      });
+    }
+
     const body = await context.request.json();
+    body.system_prompt = "You are Syntiox AI, the official assistant for Syntiox Services. You are helpful, friendly, and concise.";
     
     // Get HF_TOKEN from Cloudflare Environment Variables
     const hfToken = context.env.HF_TOKEN;
@@ -18,7 +42,7 @@ export async function onRequest(context) {
     }
 
     // Proxy the request to Hugging Face Space securely
-    const response = await fetch("https://kakavindu16-syntioxai1.hf.space/generate", {
+    const response = await fetch("https://kakavindu16-md.hf.space/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
