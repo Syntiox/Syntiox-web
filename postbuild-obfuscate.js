@@ -48,20 +48,18 @@ async function run() {
   while (retries > 0) {
     try {
       res = await fetch(API_PROTECT, { method: 'POST', body: formData });
-      break;
+      if (res.ok) break;
+      console.log(`[Obfuscator] API returned status ${res.status}, retrying in 5s...`);
     } catch (e) {
       console.log(`[Obfuscator] Network error during upload (${e.message}), retrying in 5s...`);
-      retries--;
-      if (retries === 0) {
-        console.error("Upload failed after multiple attempts.");
-        process.exit(1);
-      }
-      await new Promise(r => setTimeout(r, 5000));
     }
-  }
-  if (!res.ok) {
-    console.error("Upload failed", await res.text());
-    process.exit(1);
+    retries--;
+    if (retries === 0) {
+      console.error("Upload failed after multiple attempts.");
+      if (res && !res.ok) console.error("Last API Response:", await res.text());
+      process.exit(1);
+    }
+    await new Promise(r => setTimeout(r, 5000));
   }
   
   const { jobId } = await res.json();
