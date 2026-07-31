@@ -2,8 +2,6 @@
 // SYNTIOX — Main Script (Premium Redesign)
 // =====================================================
 
-(function() {
-
 document.addEventListener('DOMContentLoaded', () => {
     initScrollReveal();
     initNavbar();
@@ -147,8 +145,8 @@ document.addEventListener('keydown', e => {
 
 // ── Smooth anchor clicks ──────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        const target = document.querySelector(this.getAttribute('href'));
+    anchor.addEventListener('click', (e) => {
+        const target = document.querySelector(anchor.getAttribute('href'));
         if (target) {
             e.preventDefault();
             const offset = 80;
@@ -157,5 +155,3 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
-
-})();
