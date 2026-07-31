@@ -138,6 +138,7 @@
 }
 
 .suggestion-btn {
+    touch-action: manipulation;
     padding: 6px 14px;
     background: #fff;
     border: 1px solid #e5e5e7;
@@ -219,6 +220,7 @@
 }
 
 #send-btn {
+    touch-action: manipulation;
     width: 36px;
     height: 36px;
     background: #1d1d1f;
@@ -484,6 +486,7 @@
 }
 
 .msg-action-btn {
+    touch-action: manipulation;
     background: none;
     border: none;
     cursor: pointer;
@@ -505,6 +508,7 @@
 
 /* ── Action Buttons (Copy / Retry / Report) ── */
 .action-btn {
+    touch-action: manipulation;
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -545,10 +549,23 @@
     #chat-window {
         width: 100%;
         height: 55dvh;
+        left: 0;
         right: 0;
         bottom: 0;
         border-radius: 20px 20px 0 0;
         box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+    }
+    
+    #chat-messages {
+        scrollbar-width: none;
+    }
+    
+    #chat-messages::-webkit-scrollbar {
+        display: none;
+    }
+    
+    #chat-input {
+        font-size: 16px; /* Fix iOS Auto-Zoom Bug */
     }
     
     #ai-fab {

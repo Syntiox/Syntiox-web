@@ -59,6 +59,8 @@ html {
     scroll-behavior: smooth;
     background: var(--white);
     font-size: 16px;
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 body {
@@ -66,6 +68,7 @@ body {
     color: var(--text-primary);
     background: var(--white);
     overflow-x: hidden;
+    max-width: 100%;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -174,6 +177,7 @@ h1, h2, h3, h4 {
 }
 
 .nav-cta {
+    touch-action: manipulation;
     padding: 8px 20px;
     background: var(--text-primary);
     color: #fff;
@@ -254,6 +258,7 @@ h1, h2, h3, h4 {
 }
 
 .mobile-link {
+    touch-action: manipulation;
     font-family: var(--font-display);
     font-size: 1.5rem;
     font-weight: 600;
@@ -1471,6 +1476,7 @@ h1, h2, h3, h4 {
    CHAT BUTTON
 ══════════════════════════════════════ */
 #chat-btn {
+    touch-action: manipulation;
     position: fixed;
     bottom: 28px;
     right: 28px;
