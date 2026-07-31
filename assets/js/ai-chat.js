@@ -129,6 +129,95 @@ document.addEventListener("mouseup", stopResize);
 document.addEventListener("touchend", stopResize);
 // --------------------------------------------------
 let chatWarningShown = false;
+let currentUser = null;
+
+function initAuthGate() {
+  const STYLES = `
+  #cxai-auth-gate {
+    position: fixed; bottom: 100px; right: 28px; z-index: 9999;
+    width: 340px; max-width: calc(100vw - 40px);
+    border-radius: 24px;
+    background: rgba(8, 8, 12, 0.97);
+    border: 1px solid rgba(168,85,247,0.3);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(168,85,247,0.1);
+    backdrop-filter: blur(40px);
+    padding: 28px 24px;
+    transform-origin: bottom right;
+    transition: transform 0.35s ease, opacity 0.25s ease;
+    text-align: center;
+  }
+  #cxai-auth-gate.cxai-hidden {
+    transform: scale(0.85) translateY(20px);
+    opacity: 0; pointer-events: none;
+  }
+  #cxai-auth-gate-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2));
+    border: 1px solid rgba(168,85,247,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; font-size: 1.6rem;
+  }
+  #cxai-auth-gate h3 {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700; color: #f1f1f3; margin-bottom: 8px;
+  }
+  #cxai-auth-gate p {
+    font-size: 0.8rem; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 20px;
+  }
+  #cxai-auth-gate-signin {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 12px 20px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border: none; border-radius: 14px; cursor: pointer;
+    color: #fff; font-size: 0.875rem; font-weight: 600;
+  }
+  #cxai-auth-gate-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(255,255,255,0.06); border: none; cursor: pointer; color: white;
+  }
+  `;
+  const styleEl = document.createElement('style');
+  styleEl.innerHTML = STYLES;
+  document.head.appendChild(styleEl);
+
+  const gate = document.createElement('div');
+  gate.id = 'cxai-auth-gate';
+  gate.classList.add('cxai-hidden');
+  gate.innerHTML = `
+    <button id="cxai-auth-gate-close">✕</button>
+    <div id="cxai-auth-gate-icon">🔒</div>
+    <h3>Sign in to use Syntiox AI</h3>
+    <p>You need to be signed in with your Syntiox account to chat with Syntiox AI.</p>
+    <button id="cxai-auth-gate-signin">Continue with Syntiox</button>
+  `;
+  document.body.appendChild(gate);
+
+  document.getElementById('cxai-auth-gate-close').onclick = () => gate.classList.add('cxai-hidden');
+  document.getElementById('cxai-auth-gate-signin').onclick = () => {
+    if (window.SyntioxSSO) window.SyntioxSSO.login();
+  };
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener("DOMContentLoaded", initAuthGate);
+} else {
+  initAuthGate();
+}
+
+document.addEventListener('syntioxAuthState', e => {
+  currentUser = e.detail;
+  if (currentUser) {
+    const gate = document.getElementById('cxai-auth-gate');
+    if (gate && !gate.classList.contains('cxai-hidden')) {
+      gate.classList.add('cxai-hidden');
+      toggleChat(); // Open chat since they just logged in
+    }
+  } else {
+    if (chatWindow && chatWindow.classList.contains("open")) {
+      toggleChat(); // Close chat if signed out
+    }
+  }
+});
 
 function toggleChat() {
   if (chatWindow.classList.contains("open")) {
@@ -136,6 +225,10 @@ function toggleChat() {
     // Wait for transition before display:none
     setTimeout(() => (chatWindow.style.display = "none"), 300);
   } else {
+    if (!currentUser) {
+      document.getElementById('cxai-auth-gate').classList.remove('cxai-hidden');
+      return;
+    }
     chatWindow.style.display = "flex";
     // Small delay to allow display:flex to apply before adding class for transition
     setTimeout(() => chatWindow.classList.add("open"), 10);
@@ -282,11 +375,21 @@ async function sendMessage() {
       web_context: webContext
     };
 
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    if (currentUser && typeof currentUser.getIdToken === 'function') {
+      try {
+        const token = await currentUser.getIdToken();
+        headers['Authorization'] = `Bearer ${token}`;
+      } catch (e) {
+        console.error("Auth token error", e);
+      }
+    }
+
     const response = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: headers,
       body: JSON.stringify(payload),
       signal: abortController.signal,
     });

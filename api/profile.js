@@ -2,7 +2,26 @@ import fs from 'fs';
 import path from 'path';
 import https from 'https';
 
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_REQUESTS_PER_WINDOW = 30; // Max 30 requests per minute per IP
+
 export default async function handler(req, res) {
+  // Simple Rate Limiting per Vercel instance
+  const ip = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'unknown';
+  const now = Date.now();
+  let rateData = rateLimitMap.get(ip);
+
+  if (!rateData || now - rateData.startTime > RATE_LIMIT_WINDOW_MS) {
+    rateData = { count: 1, startTime: now };
+  } else {
+    rateData.count++;
+  }
+  rateLimitMap.set(ip, rateData);
+
+  if (rateData.count > MAX_REQUESTS_PER_WINDOW) {
+    return res.status(429).send("Too Many Requests - Please try again later");
+  }
   const handle = req.query.handle;
   if (!handle) {
     return res.status(400).send("No handle provided");
