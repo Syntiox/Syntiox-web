@@ -1,5 +1,3 @@
-(function() {
-
 const chatWindow = document.getElementById("chat-window");
 const chatMessages = document.getElementById("chat-messages");
 const chatInput = document.getElementById("chat-input");
@@ -685,5 +683,4 @@ window.closeReportModal = closeReportModal;
 window.submitReport = submitReport;
 window.closeConfirmModal = closeConfirmModal;
 window.executeClearChat = executeClearChat;
-
-})();
+// AI Chat code complete.
