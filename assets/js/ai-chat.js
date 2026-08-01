@@ -376,7 +376,9 @@ async function sendMessage() {
     const headers = {
       "Content-Type": "application/json",
     };
-    if (currentUser && typeof currentUser.getIdToken === 'function') {
+    if (window.SyntioxSSO && window.SyntioxSSO.customToken) {
+      headers['Authorization'] = `Bearer ${window.SyntioxSSO.customToken}`;
+    } else if (currentUser && typeof currentUser.getIdToken === 'function') {
       try {
         const token = await currentUser.getIdToken();
         headers['Authorization'] = `Bearer ${token}`;
