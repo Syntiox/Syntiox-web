@@ -29,17 +29,26 @@ export default async function handler(request) {
     const idToken = authHeader.split("Bearer ")[1];
     const firebaseApiKey = "AIzaSyDCQ1yq4ySr0HC4j1ksSWR7lUdPHvD1UCI";
 
-    const verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
+    let verifyRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${firebaseApiKey}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ idToken })
     });
 
-    const verifyData = await verifyRes.json();
+    let verifyData = await verifyRes.json();
     if (verifyData.error) {
-      return new Response(JSON.stringify({ error: "Unauthorized: Invalid token" }), {
-        status: 401, headers: { "Content-Type": "application/json" }
+      // Fallback: If it fails, it might be a Custom Token from the SSO client. Let's try to exchange it.
+      const exchangeRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${firebaseApiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: idToken, returnSecureToken: true })
       });
+      const exchangeData = await exchangeRes.json();
+      if (exchangeData.error) {
+        return new Response(JSON.stringify({ error: "Unauthorized: Invalid token" }), {
+          status: 401, headers: { "Content-Type": "application/json" }
+        });
+      }
     }
 
     const hfToken = process.env.HF_TOKEN;
