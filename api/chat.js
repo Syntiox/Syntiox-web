@@ -49,14 +49,7 @@ export default async function handler(request) {
       });
     }
 
-    let payload = {};
-    try {
-      payload = await request.json();
-    } catch (e) {
-      const text = await request.text().catch(() => "");
-      try { payload = JSON.parse(text); } catch (e2) {}
-    }
-    
+    const payload = await request.json();
     payload.system_prompt = "You are Syntiox AI, the official assistant for Syntiox Services. You are helpful, friendly, and concise.";
 
     // Proxy request to Hugging Face Space
@@ -68,6 +61,15 @@ export default async function handler(request) {
       },
       body: JSON.stringify(payload)
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Hugging Face API Error:', response.status, errorText);
+      return new Response(JSON.stringify({ error: `AI Error: Space returned status ${response.status}. Please check if the space is awake and the token is valid.` }), {
+        status: response.status,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+      });
+    }
 
     // Stream the response back exactly as received using Edge runtime
     return new Response(response.body, {
