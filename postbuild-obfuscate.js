@@ -1,9 +1,9 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 
-const API_PROTECT = "https://securecode-pro-api.onrender.com/api/v1/protect";
-const API_STATUS = "https://securecode-pro-api.onrender.com/api/v1/status";
-const API_DOWNLOAD = "https://securecode-pro-api.onrender.com/api/v1/download";
+const API_PROTECT = "https://jasmine123456-jasminev4.hf.space/api/v1/protect";
+const API_STATUS = "https://jasmine123456-jasminev4.hf.space/api/v1/status";
+const API_DOWNLOAD = "https://jasmine123456-jasminev4.hf.space/api/v1/download";
 
 async function run() {
   console.log("[Obfuscator] Zipping dist folder...");
@@ -44,7 +44,7 @@ async function run() {
   formData.append('settings', JSON.stringify(settings));
 
   let res;
-  let retries = 3;
+  let retries = 15;
   while (retries > 0) {
     try {
       res = await fetch(API_PROTECT, { method: 'POST', body: formData });
