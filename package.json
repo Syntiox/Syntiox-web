@@ -9,16 +9,7 @@
     "preview": "vite preview",
     "clean": "rm -rf dist"
   },
-  "dependencies": {
-    "@google/genai": "^1.29.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
-    "motion": "^12.23.24"
-  },
   "devDependencies": {
-    "autoprefixer": "^10.4.21",
-    "tailwindcss": "^4.1.14",
     "vite": "^6.2.3"
   }
 }

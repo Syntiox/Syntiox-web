@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -134,8 +134,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;0,14..32,900;1,14..32,400&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="stylesheet" href="/assets/css/ai-chat.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 </head>
 
 <body>
@@ -625,87 +623,26 @@
         </div>
     </footer>
 
-    <!-- AI Chat -->
-    <div id="chat-btn" onclick="toggleChat()" title="Chat with Syntiox AI">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-    </div>
-
-    <div id="chat-window">
-        <div id="resizer"></div>
-        <div id="resizer-left"></div>
-        <div id="resizer-corner"></div>
-        <div id="chat-header">
-            <div class="chat-header-info">
-                <div class="chat-ai-dot"></div>
-                Syntiox AI Agent
-            </div>
-            <div style="display:flex;align-items:center;gap:8px;">
-                <button title="Clear Chat" onclick="clearChat()" class="chat-icon-btn">
-                    <svg style="width:16px;height:16px;fill:white;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                </button>
-                <button title="Close" onclick="toggleChat()" class="chat-icon-btn">
-                    <svg style="width:16px;height:16px;fill:white;" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-        </div>
-        <div id="cpu-warning" style="display:none; background:#fffbeb; color:#b45309; padding:10px 14px; font-size:0.75rem; text-align:center; border-bottom:1px solid #fef3c7;">
-            ⚠️ This AI model is currently running on a <b>CPU instance</b>.<br>Token generation may take longer than usual.
-        </div>
-        <div id="chat-messages">
-            <div class="message bot-message">Hello! I'm Syntiox AI. How can I help you today? 😊</div>
-            <div id="suggestions" class="suggestions-container">
-                <button class="suggestion-btn" onclick="sendSuggestion('Who are you?')">Who are you?</button>
-                <button class="suggestion-btn" onclick="sendSuggestion('Tell me about Syntiox')">Tell me about Syntiox</button>
-                <button class="suggestion-btn" onclick="sendSuggestion('What can you do?')">What can you do?</button>
-            </div>
-        </div>
-        <div id="chat-input-container">
-            <input type="text" id="chat-input" placeholder="Ask me anything..." onkeypress="handleKeyPress(event)">
-            <button id="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
-        </div>
-    </div>
-
-    <!-- Report Modal -->
-    <div id="report-modal" class="custom-modal">
-        <div class="modal-content">
-            <h4 style="display:flex; align-items:center; gap:8px;">
-                <svg style="width:20px;height:20px;fill:#ffc107;" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
-                Report an Issue
-            </h4>
-            <textarea id="report-text" placeholder="Describe the problem here..."></textarea>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeReportModal()">Cancel</button>
-                <button class="btn-primary" onclick="submitReport()">Send Report</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirm Modal -->
-    <div id="confirm-modal" class="custom-modal">
-        <div class="modal-content">
-            <h4 style="display:flex; align-items:center; gap:8px; color:#d32f2f;">
-                <svg style="width:20px;height:20px;fill:currentColor;" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                Clear Chat?
-            </h4>
-            <p>Are you sure you want to clear the entire chat history? This cannot be undone.</p>
-            <div class="modal-actions">
-                <button class="btn-cancel" onclick="closeConfirmModal()">Cancel</button>
-                <button class="btn-danger" onclick="executeClearChat()">Clear Chat</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast-container"></div>
-
-
     <script src="./assets/js/script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked-katex-extension/lib/index.umd.js"></script>
-    <script src="./assets/js/ai-chat.js"></script>
-<script src="https://account.syntiox.top/assets/js/sso-client.js?v=2"></script>
+
+    <script>
+                window.SyntioxWidget = {
+            botName: 'Syntiox AI',
+            accent: '#1d1d1f',
+            accent2: '#a1a1aa',
+            theme: 'light',
+            welcomeTitle: 'Welcome to Syntiox! 🚀',
+            welcomeMessage: 'I am here to help you explore our AI products, developer tools, and architecture. Ask me anything!',
+            quickButtons: [
+                { label: 'What is Syntiox?', question: 'What does Syntiox do?' },
+                { label: 'AI Products', question: 'Tell me about your AI assistant platforms.' },
+                { label: 'Developer Tools', question: 'What developer tools do you offer?' }
+            ],
+            systemPrompt: 'You are Syntiox AI, the official assistant for Syntiox (syntiox.top). Syntiox is a tech company building next-generation tools at the frontier of Artificial Intelligence, Advanced Security, and Scalable Architecture. Products include advanced AI assistants (including localized solutions for Sri Lanka), precision developer tooling, and API management consoles. Your job is to help users understand our products, assist developers, and answer technical questions. Be concise, professional, and friendly. You can reply in Sinhala or English depending on the user.'
+        };
+    </script>
+    <script src="https://account.syntiox.top/assets/js/sso-client.js?v=2"></script>
+    <script src="https://ai.syntiox.top/widget.js"></script>
 </body>
 </html>
 <!-- Force hash update 1 -->

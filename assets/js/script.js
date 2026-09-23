@@ -126,20 +126,10 @@ function setFooterYear() {
     if (el) el.textContent = new Date().getFullYear();
 }
 
-// (AI Chat logic removed - fully handled by ai-chat.js)
-
 // ── Keyboard shortcut: ESC closes menus ──────────
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         closeMobileMenu();
-        closeReportModal();
-        closeConfirmModal();
-
-        // Close chat
-        const chatWindow = document.getElementById('chat-window');
-        if (chatWindow && chatWindow.classList.contains('open')) {
-            toggleChat();
-        }
     }
 });
 
