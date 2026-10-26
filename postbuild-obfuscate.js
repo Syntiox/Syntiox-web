@@ -1,15 +1,18 @@
 import { execSync } from 'child_process';
-import { readFileSync, writeFileSync } from 'fs';
+import fs, { readFileSync, writeFileSync } from 'fs';
 
 const API_PROTECT = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/protect";
 const API_STATUS = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/status";
 const API_DOWNLOAD = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/download";
 
 async function run() {
-  console.log("[Obfuscator] Zipping dist folder...");
+  console.log("[Obfuscator] Zipping dist folder (excluding third-party vendors)...");
   try {
-    // Zip only the contents of dist folder (excluding api and service workers)
-    execSync('cd dist && zip -r ../source.zip . -x "api/*" "sw.js" "workbox-*.js"');
+    if (process.platform === 'win32') {
+      execSync('powershell "Get-ChildItem -Path dist -Recurse -File | Where-Object { $_.Name -notmatch \'vendor|sw\\.js|workbox\' -and $_.FullName -notmatch \'\\\\api\\\\\' } | Compress-Archive -DestinationPath source.zip -Force"');
+    } else {
+      execSync('cd dist && zip -r ../source.zip . -x "api/*" "sw.js" "workbox-*.js" "assets/vendor-*.js" "*vendor*"');
+    }
   } catch (err) {
     console.error("Failed to zip:", err.message);
     process.exit(1);
@@ -32,10 +35,10 @@ async function run() {
   };
 
   console.log("[Obfuscator] Uploading to API...");
-
+  
   const fileBuffer = readFileSync('source.zip');
   const blob = new Blob([fileBuffer], { type: 'application/zip' });
-
+  
   const formData = new FormData();
   formData.append('file', blob, 'source.zip');
   formData.append('settings', JSON.stringify(settings));
@@ -58,7 +61,7 @@ async function run() {
     }
     await new Promise(r => setTimeout(r, 5000));
   }
-
+  
   const { jobId } = await res.json();
   console.log(`[Obfuscator] Job ID: ${jobId}, waiting for completion...`);
 
@@ -67,26 +70,35 @@ async function run() {
     try {
       const statusRes = await fetch(`${API_STATUS}/${jobId}`);
       const statusData = await statusRes.json();
-
+      
       if (statusData.status === 'completed') {
-        console.log("[Obfuscator] Obfuscation complete. Downloading...");
-        const downRes = await fetch(`${API_DOWNLOAD}/${jobId}`);
-        if (!downRes.ok) {
-          console.error("Download failed", await downRes.text());
-          process.exit(1);
-        }
-        const arrayBuffer = await downRes.arrayBuffer();
-        writeFileSync('protected.zip', Buffer.from(arrayBuffer));
-        console.log("[Obfuscator] Extracting protected files...");
-        // Extract directly into dist folder
-        execSync('unzip -o protected.zip -d dist');
-        console.log("[Obfuscator] Done! Files overwritten with obfuscated versions.");
-        break;
+         console.log("[Obfuscator] Obfuscation complete. Downloading...");
+         const downRes = await fetch(`${API_DOWNLOAD}/${jobId}`);
+         if (!downRes.ok) {
+             console.error("Download failed", await downRes.text());
+             process.exit(1);
+         }
+         const arrayBuffer = await downRes.arrayBuffer();
+         writeFileSync('protected.zip', Buffer.from(arrayBuffer));
+         console.log("[Obfuscator] Extracting protected files into dist...");
+         if (process.platform === 'win32') {
+           execSync('powershell Expand-Archive -Path protected.zip -DestinationPath dist -Force');
+         } else {
+           execSync('unzip -o protected.zip -d dist');
+         }
+
+         try {
+           if (fs.existsSync('source.zip')) fs.unlinkSync('source.zip');
+           if (fs.existsSync('protected.zip')) fs.unlinkSync('protected.zip');
+         } catch {}
+
+         console.log("[Obfuscator] Done! Files overwritten with obfuscated versions in dist.");
+         break;
       } else if (statusData.status === 'error') {
-        console.error("[Obfuscator] Server error:", statusData.error);
-        process.exit(1);
+         console.error("[Obfuscator] Server error:", statusData.error);
+         process.exit(1);
       } else {
-        console.log("[Obfuscator] Still processing...");
+         console.log("[Obfuscator] Still processing...");
       }
     } catch (e) {
       console.log(`[Obfuscator] Network error during status check (${e.message}), retrying...`);

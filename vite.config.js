@@ -13,6 +13,13 @@ export default defineConfig({
         profile: './profile.html',
         contact: './contact.html',
         error: './404.html'
+      },
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
       }
     }
   }
