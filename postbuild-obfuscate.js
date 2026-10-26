@@ -1,9 +1,9 @@
 import { execSync } from 'child_process';
 import { readFileSync, writeFileSync } from 'fs';
 
-const API_PROTECT = "https://jasmine123456-jasminev4.hf.space/api/v1/protect";
-const API_STATUS = "https://jasmine123456-jasminev4.hf.space/api/v1/status";
-const API_DOWNLOAD = "https://jasmine123456-jasminev4.hf.space/api/v1/download";
+const API_PROTECT = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/protect";
+const API_STATUS = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/status";
+const API_DOWNLOAD = "https://shalukagimhan1-sh4lu-z-obfuscator.hf.space/api/v1/download";
 
 async function run() {
   console.log("[Obfuscator] Zipping dist folder...");
@@ -17,21 +17,18 @@ async function run() {
 
   const settings = {
     fastMode: true,
+    bytecodeVm: true,
     stringEncryption: "base64",
-    controlFlow: 25,
-    deadCode: 5,
-    selfDefending: false,
-    debugProtection: false,
-    antiLLM: true,
-    antiDeobfuscator: false,
     customStringCipher: true,
     customControlFlow: true,
+    controlFlow: 35,
     opaquePredicates: true,
-    integrityGuard: false,
+    antiDeobfuscator: true,
+    integrityGuard: true,
     llmContextFlood: true,
+    antiLLM: true,
     enableCopyright: true,
-    copyrightMessage: "Copyright (c) 2026 Shaluka Gimhan (sh4lu-z) <hello@shalukagimhan.com>. All rights reserved.\n\nThis source code is licensed under the MIT license found in the\nLICENSE file in the root directory of this source tree.",
-    copyrightCount: 1
+    copyrightMessage: "Copyright (c) 2026 Shaluka Gimhan (Syntiox). All Rights Reserved.\nSPDX-License-Identifier: Proprietary\n\nUnauthorized copying, modification, distribution, or reverse engineering of this software is strictly prohibited."
   };
 
   console.log("[Obfuscator] Uploading to API...");
