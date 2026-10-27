@@ -98,7 +98,11 @@ async function run() {
          console.error("[Obfuscator] Server error:", statusData.error);
          process.exit(1);
       } else {
-         console.log("[Obfuscator] Still processing...");
+         if (statusData.totalFiles) {
+           console.log(`[Obfuscator] [${statusData.processedFiles}/${statusData.totalFiles}] (${statusData.percentage}%) Obfuscating: ${statusData.currentFile || 'preparing...'}`);
+         } else {
+           console.log("[Obfuscator] Still processing...");
+         }
       }
     } catch (e) {
       console.log(`[Obfuscator] Network error during status check (${e.message}), retrying...`);
