@@ -136,28 +136,22 @@
       }
       // Social platforms config
       const SOCIAL_DEFS = [
-        { id:'email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:',                   fullValue:true  },
-        { id:'phone',       icon:'fa-solid fa-phone',          color:'#25d366', prefix:'tel:',                      fullValue:true  },
-        { id:'whatsapp',    icon:'fa-brands fa-whatsapp',      color:'#25d366', prefix:'https://wa.me/',            fullValue:false },
-        { id:'telegram',    icon:'fa-brands fa-telegram',      color:'#0088cc', prefix:'https://t.me/',             fullValue:false },
-        { id:'linkedin',    icon:'fa-brands fa-linkedin',      color:'#0077b5', prefix:'https://linkedin.com/',     fullValue:false },
-        { id:'discord',     icon:'fa-brands fa-discord',       color:'#5865f2', prefix:'https://discord.com/users/',fullValue:false },
-        { id:'youtube',     icon:'fa-brands fa-youtube',       color:'#ff0000', prefix:'https://youtube.com/',      fullValue:false },
-        { id:'instagram',   icon:'fa-brands fa-instagram',     color:'#e1306c', prefix:'https://instagram.com/',    fullValue:false },
-        { id:'twitter',     icon:'fa-brands fa-x-twitter',     color:'#000000', prefix:'https://x.com/',            fullValue:false },
-        { id:'facebook',    icon:'fa-brands fa-facebook',      color:'#1877f2', prefix:'https://facebook.com/',     fullValue:false },
-        { id:'bluesky',     icon:'fa-solid fa-cloud',          color:'#0085ff', prefix:'https://bsky.app/profile/', fullValue:false },
-        { id:'threads',     icon:'fa-brands fa-threads',       color:'#000000', prefix:'https://threads.net/@',     fullValue:false },
-        { id:'tiktok',      icon:'fa-brands fa-tiktok',        color:'#010101', prefix:'https://tiktok.com/',       fullValue:false },
-        { id:'snapchat',    icon:'fa-brands fa-snapchat',      color:'#ffcc00', prefix:'https://snapchat.com/add/', fullValue:false },
-        { id:'reddit',      icon:'fa-brands fa-reddit',        color:'#ff4500', prefix:'https://reddit.com/',       fullValue:false },
+        { id:'github',      label:'GitHub',      icon:'fa-brands fa-github',        color:'#24292f', prefix:'https://github.com/',       fullValue:false },
+        { id:'twitter',     label:'X (Twitter)', icon:'fa-brands fa-x-twitter',     color:'#000000', prefix:'https://x.com/',            fullValue:false },
+        { id:'linkedin',    label:'LinkedIn',    icon:'fa-brands fa-linkedin',      color:'#0077b5', prefix:'https://linkedin.com/in/',  fullValue:false },
+        { id:'youtube',     label:'YouTube',     icon:'fa-brands fa-youtube',       color:'#ff0000', prefix:'https://youtube.com/',      fullValue:false },
+        { id:'telegram',    label:'Telegram',    icon:'fa-brands fa-telegram',      color:'#0088cc', prefix:'https://t.me/',             fullValue:false },
+        { id:'whatsapp',    label:'WhatsApp',    icon:'fa-brands fa-whatsapp',      color:'#25d366', prefix:'https://wa.me/',            fullValue:false },
+        { id:'email',       label:'Email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:',                   fullValue:true  },
       ];
       const socialHtml = SOCIAL_DEFS.filter(s => social[s.id])
         .map(s => {
-          const rawUrl = `${s.prefix}${social[s.id]}`;
+          let val = social[s.id];
+          if (s.id === 'linkedin' && val.startsWith('in/')) val = val.slice(3);
+          const rawUrl = `${s.prefix}${val}`;
           const safeUid = userData.uid || '';
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${safeUid}&key=Social%3A%20${encodeURIComponent(s.label || s.id)}&url=${encodeURIComponent(rawUrl)}`;
-          return `<a class="social-ic" href="${esc(redirectUrl)}" style="background:${s.color};" target="_blank" rel="noopener" title="${s.id}"><i class="${s.icon}"></i></a>`;
+          return `<a class="social-ic" href="${esc(redirectUrl)}" style="background:${s.color};" target="_blank" rel="noopener" title="${esc(s.label || s.id)}"><i class="${s.icon}"></i></a>`;
         }).join('');
       // Links HTML with server-side redirect tracking
       const linksHtml = links.length > 0 ? `
