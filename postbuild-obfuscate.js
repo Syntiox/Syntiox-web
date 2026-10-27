@@ -1,3 +1,4 @@
+// Trigger build with updated obfuscator engine
 import { execSync } from 'child_process';
 import fs, { readFileSync, writeFileSync } from 'fs';
 
