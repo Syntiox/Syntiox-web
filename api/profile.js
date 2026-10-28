@@ -29,7 +29,6 @@ export default async function handler(req, res) {
 
   try {
     // 1. Read the original HTML file
-    // In Vercel, static files are available in the root
     const htmlPath = path.join(process.cwd(), 'profile.html');
     let html = fs.readFileSync(htmlPath, 'utf8');
 
@@ -72,46 +71,54 @@ export default async function handler(req, res) {
 
     if (userRes && userRes.fields) {
       const f = userRes.fields;
-      // Get values, handling potential nulls
-      const name = f.displayName ? f.displayName.stringValue : (f.name ? f.name.stringValue : 'User');
-      const bio = f.bio ? f.bio.stringValue : 'Syntiox Profile';
+      const name = f.displayName ? f.displayName.stringValue : (f.name ? f.name.stringValue : handle);
+      const bio = f.bio ? f.bio.stringValue : `View ${name}'s profile on Syntiox.`;
       
-      // Check if user has explicitly disabled metadata photo
+      // Check if user has explicitly enabled/disabled metadata photo
       let showPhoto = true;
-      if (f.appearance && f.appearance.mapValue && f.appearance.mapValue.fields && f.appearance.mapValue.fields.showMetadataPhoto) {
-        showPhoto = f.appearance.mapValue.fields.showMetadataPhoto.booleanValue !== false;
+      if (f.appearance && f.appearance.mapValue && f.appearance.mapValue.fields) {
+        const appFields = f.appearance.mapValue.fields;
+        if (appFields.showMetadataPhoto && appFields.showMetadataPhoto.booleanValue !== undefined) {
+          showPhoto = appFields.showMetadataPhoto.booleanValue !== false;
+        }
       }
       
-      const photoURL = (showPhoto && f.photoURL) 
-        ? f.photoURL.stringValue 
-        : 'https://syntiox.top/assets/logo-IcotzT0R.png';
+      const rawUserPhoto = (f.photoURL && f.photoURL.stringValue)
+        || (f.avatar && f.avatar.stringValue)
+        || (f.bannerURL && f.bannerURL.stringValue)
+        || '';
+
+      const photoURL = (showPhoto && rawUserPhoto) 
+        ? rawUserPhoto 
+        : 'https://syntiox.top/assets/image/logo.png';
       
+      const cardType = (showPhoto && rawUserPhoto) ? 'summary_large_image' : 'summary';
       const title = `${name} | Syntiox`;
 
       // 4. Inject Meta Tags
       const metaTags = `
-    <title>${title}</title>
-    <meta name="description" content="${bio}">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://syntiox.top/u/${handle}">
-    <meta property="og:title" content="${title}">
-    <meta property="og:description" content="${bio}">
-    <meta property="og:image" content="${photoURL}">
+  <title>${title}</title>
+  <meta name="description" content="${bio}">
+  
+  <!-- Open Graph / WhatsApp / Facebook -->
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://syntiox.top/u/${handle}">
+  <meta property="og:title" content="${title}">
+  <meta property="og:description" content="${bio}">
+  <meta property="og:image" content="${photoURL}">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://syntiox.top/u/${handle}">
-    <meta property="twitter:title" content="${title}">
-    <meta property="twitter:description" content="${bio}">
-    <meta property="twitter:image" content="${photoURL}">
-    `;
+  <!-- Twitter -->
+  <meta name="twitter:card" content="${cardType}">
+  <meta name="twitter:url" content="https://syntiox.top/u/${handle}">
+  <meta name="twitter:title" content="${title}">
+  <meta name="twitter:description" content="${bio}">
+  <meta name="twitter:image" content="${photoURL}">
+`;
 
-      // Replace the existing title/meta tags (or just inject into head)
-      // Remove existing title if possible
+      // Clean existing tags so we don't have duplicates
       html = html.replace(/<title>.*?<\/title>/gi, '');
-      html = html.replace(/<meta\s+name="description".*?>/gi, '');
+      html = html.replace(/<meta\s+name=["']description["'][^>]*>/gi, '');
+      html = html.replace(/<meta\s+(?:property|name)=["'](?:og|twitter):[^"']*["'][^>]*>/gi, '');
       
       // Inject before </head>
       html = html.replace('</head>', `${metaTags}\n</head>`);
@@ -119,12 +126,11 @@ export default async function handler(req, res) {
 
     // 5. Send modified HTML
     res.setHeader('Content-Type', 'text/html');
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate'); // cache on CDN for 60 seconds
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
     return res.status(200).send(html);
 
   } catch (error) {
     console.error('Error generating dynamic OG tags:', error);
-    // On error, try to send the raw file, or a 500
     try {
       const htmlPath = path.join(process.cwd(), 'profile.html');
       const html = fs.readFileSync(htmlPath, 'utf8');
