@@ -85,7 +85,6 @@ export default async function handler(req, res) {
       
       const rawUserPhoto = (f.photoURL && f.photoURL.stringValue)
         || (f.avatar && f.avatar.stringValue)
-        || (f.bannerURL && f.bannerURL.stringValue)
         || '';
 
       const photoURL = (showPhoto && rawUserPhoto) 

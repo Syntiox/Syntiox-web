@@ -6,47 +6,46 @@
   <title>Profile | Syntiox</title>
   <meta name="description" content="View this profile on Syntiox." />
   <meta name="theme-color" content="#0071e3" />
-  
-  <!-- OpenGraph / WhatsApp / Twitter Social Metadata -->
+
   <meta property="og:type" content="profile" />
   <meta property="og:title" content="Profile | Syntiox" />
   <meta property="og:description" content="View this profile on Syntiox." />
-  <meta property="og:image" id="og-image" content="https://syntiox.top/assets/image/logo.png" />
+  <meta property="og:image" id="og-image" content="/assets/image/logo.png" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Profile | Syntiox" />
   <meta name="twitter:description" content="View this profile on Syntiox." />
-  <meta name="twitter:image" id="tw-image" content="https://syntiox.top/assets/image/logo.png" />
-  
-  <!-- Preload fonts -->
+  <meta name="twitter:image" id="tw-image" content="/assets/image/logo.png" />
+  <link rel="icon" href="/assets/image/favicon.png" type="image/png" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    /* CSS Reset & Variables */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
     :root {
       --pg-accent: #0071e3;
       --pg-accent-rgb: 0, 113, 227;
-      --pg-bg: #f8fafc;
+      --pg-bg: #fbfbf9;
       --pg-card-bg: #ffffff;
-      --pg-card-border: #e2e8f0;
-      --pg-text: #0f172a;
-      --pg-text-muted: #64748b;
+      --pg-surface-subtle: #f4f4f1;
+      --pg-card-border: #e6e6e1;
+      --pg-text: #111315;
+      --pg-text-muted: #64686e;
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
-      --font-serif: 'Playfair Display', serif;
+      --font-serif: 'Newsreader', Georgia, serif;
     }
 
-    /* Dark Mode Global Variables */
     body[data-mode="dark"] {
       --pg-bg: #09090b;
       --pg-card-bg: #121215;
-      --pg-card-border: #27272a;
-      --pg-text: #f8fafc;
-      --pg-text-muted: #a1a1aa;
+      --pg-surface-subtle: #1a1a1f;
+      --pg-card-border: #242429;
+      --pg-text: #f4f4f6;
+      --pg-text-muted: #9ca3af;
     }
 
     body {
@@ -57,7 +56,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      transition: background-color 0.25s ease, color 0.25s ease;
       -webkit-font-smoothing: antialiased;
       line-height: 1.5;
     }
@@ -71,139 +69,245 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      position: relative;
     }
 
-    /* Loader */
-    .loader-wrap {
+    /* Animations control */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    body[data-animations="on"] .anim-item {
+      animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    body[data-animations="on"] .anim-d1 { animation-delay: 0.05s; }
+    body[data-animations="on"] .anim-d2 { animation-delay: 0.1s; }
+    body[data-animations="on"] .anim-d3 { animation-delay: 0.15s; }
+
+    body[data-animations="off"] *,
+    body[data-animations="off"] *::before,
+    body[data-animations="off"] *::after {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+    }
+
+    /* Clean Skeleton Loader (No spinning wheel) */
+    @keyframes shimmer {
+      0% { opacity: 0.45; }
+      50% { opacity: 0.9; }
+      100% { opacity: 0.45; }
+    }
+    .skeleton-shell {
+      width: 100%;
+      max-width: 620px;
+      padding: 56px 20px 24px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 60vh;
+      gap: 14px;
+      animation: shimmer 1.6s ease-in-out infinite;
+    }
+    .sk-card {
+      background: var(--pg-card-bg);
+      border: 1px solid var(--pg-card-border);
+      border-radius: 22px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
-      color: var(--pg-text-muted);
-      font-size: 14px;
-      font-weight: 500;
     }
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid rgba(var(--pg-accent-rgb), 0.15);
-      border-top-color: var(--pg-accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    .sk-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .sk-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 22px;
+      background: var(--pg-surface-subtle);
+      flex-shrink: 0;
+    }
+    .sk-lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sk-line {
+      height: 12px;
+      border-radius: 6px;
+      background: var(--pg-surface-subtle);
+    }
+    .sk-w40 { width: 42%; height: 16px; }
+    .sk-w25 { width: 26%; }
+    .sk-w80 { width: 82%; }
+    .sk-w60 { width: 60%; }
+    .sk-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .sk-stat {
+      height: 78px;
+      border-radius: 18px;
+      background: var(--pg-card-bg);
+      border: 1px solid var(--pg-card-border);
+    }
+    .sk-link {
+      height: 60px;
+      border-radius: 16px;
+      background: var(--pg-card-bg);
+      border: 1px solid var(--pg-card-border);
+    }
 
-    /* Verified Badge */
+    /* Common Elements */
     .verified-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       border-radius: 50%;
       background: var(--pg-accent);
       color: #fff;
-      font-size: 10px;
+      font-size: 9px;
       margin-left: 6px;
       vertical-align: middle;
     }
+    body[data-mode="dark"] .verified-badge {
+      color: #09090b;
+    }
 
-    /* Owner Edit Profile Button */
-    .edit-profile-bar {
+    .handle-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      color: var(--pg-text-muted);
+      transition: color 0.15s ease;
+      background: none;
+      border: none;
+      font: inherit;
+      padding: 0;
+    }
+    .handle-copy:hover {
+      color: var(--pg-accent);
+    }
+    .handle-copy i {
+      font-size: 11px;
+      opacity: 0.65;
+    }
+
+    .owner-bar {
       width: 100%;
       display: flex;
       justify-content: flex-end;
-      margin-bottom: 12px;
+      margin-bottom: 4px;
     }
-    .edit-profile-btn {
+    .owner-edit-link {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 9999px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
+      font-weight: 500;
       color: var(--pg-text-muted);
-      transition: all 0.2s ease;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--pg-card-border);
+      background: var(--pg-card-bg);
+      transition: border-color 0.15s ease, color 0.15s ease;
     }
-    .edit-profile-btn:hover {
+    .owner-edit-link:hover {
       color: var(--pg-text);
       border-color: var(--pg-accent);
-      transform: translateY(-1px);
     }
 
-    /* Social Icons Common */
+    /* Unified Social Icons */
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
     .social-ic {
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--pg-surface-subtle);
+      border: 1px solid var(--pg-card-border);
+      color: var(--pg-text-muted);
+      font-size: 14px;
+      transition: all 0.18s ease;
+    }
+    .social-ic:hover {
+      color: var(--pg-accent);
+      border-color: rgba(var(--pg-accent-rgb), 0.45);
+      background: rgba(var(--pg-accent-rgb), 0.06);
+      transform: translateY(-1px);
+    }
+
+    /* Link Brand Icon Box */
+    .link-ic-box {
       width: 36px;
       height: 36px;
       border-radius: 10px;
-      color: #fff;
+      background: var(--pg-surface-subtle);
+      border: 1px solid var(--pg-card-border);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pg-text);
       font-size: 15px;
-      transition: transform 0.2s ease, opacity 0.2s ease;
-    }
-    .social-ic:hover {
-      transform: translateY(-2px);
-      opacity: 0.9;
+      flex-shrink: 0;
+      transition: border-color 0.18s ease, color 0.18s ease;
     }
 
-    /* Syntiox Footer Badge */
-    .syntiox-badge {
+    /* Syntiox Minimal Footer */
+    .syntiox-footer {
       margin-top: auto;
-      padding: 32px 16px 24px;
+      padding: 36px 16px 28px;
       text-align: center;
     }
-    .syntiox-badge a {
+    .syntiox-footer a {
       display: inline-flex;
       align-items: center;
       gap: 7px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       color: var(--pg-text-muted);
-      padding: 6px 14px;
-      border-radius: 9999px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      transition: all 0.2s;
+      opacity: 0.75;
+      transition: opacity 0.15s ease, color 0.15s ease;
     }
-    .syntiox-badge a:hover {
+    .syntiox-footer a:hover {
+      opacity: 1;
       color: var(--pg-text);
-      border-color: var(--pg-accent);
     }
-    .syntiox-badge img {
-      width: 16px;
-      height: 16px;
+    .syntiox-footer img {
+      width: 15px;
+      height: 15px;
       object-fit: contain;
+      border-radius: 3px;
     }
 
-    /* -------------------------------------------------------------
-       ENGINE 1: BENTO GRID
-       ------------------------------------------------------------- */
+    /* 1. BENTO GRID ENGINE */
     .bento-container {
       width: 100%;
-      max-width: 660px;
-      padding: 40px 16px 20px;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
+      max-width: 640px;
+      padding: 44px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
     .bento-card {
       background: var(--pg-card-bg);
       border: 1px solid var(--pg-card-border);
-      border-radius: 24px;
+      border-radius: 22px;
       padding: 24px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
     }
     .bento-hero {
-      grid-column: span 2;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -211,283 +315,320 @@
     .bento-hero-top {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
     }
     .bento-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 20px;
+      width: 96px;
+      height: 96px;
+      border-radius: 24px;
       object-fit: cover;
-      border: 2px solid var(--pg-card-border);
+      border: 1px solid var(--pg-card-border);
       flex-shrink: 0;
     }
     .bento-hero-info h1 {
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 700;
       letter-spacing: -0.02em;
-    }
-    .bento-handle {
-      font-size: 13px;
-      color: var(--pg-text-muted);
-      font-weight: 500;
-      margin-top: 2px;
+      line-height: 1.2;
+      margin-bottom: 4px;
     }
     .bento-bio {
       font-size: 14px;
-      color: var(--pg-text);
-      line-height: 1.6;
+      color: var(--pg-text-muted);
+      line-height: 1.65;
     }
-    .bento-social-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
+    .bento-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
     }
     .bento-stat {
-      grid-column: span 1;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 100px;
-    }
-    .bento-stat-val {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      color: var(--pg-accent);
+      gap: 8px;
     }
     .bento-stat-lbl {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--pg-text-muted);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
+    }
+    .bento-stat-val {
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--pg-accent);
+      font-family: var(--font-mono);
+    }
+    .bento-links-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
     .bento-link {
-      grid-column: span 2;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 20px;
-      border-radius: 20px;
+      padding: 15px 18px;
+      border-radius: 18px;
       background: var(--pg-card-bg);
       border: 1px solid var(--pg-card-border);
-      transition: all 0.2s ease;
+      transition: border-color 0.18s ease, transform 0.18s ease;
     }
     .bento-link:hover {
-      transform: translateY(-2px);
       border-color: var(--pg-accent);
-      box-shadow: 0 8px 20px -6px rgba(var(--pg-accent-rgb), 0.15);
+      transform: translateY(-1px);
+    }
+    .bento-link:hover .link-ic-box {
+      border-color: rgba(var(--pg-accent-rgb), 0.4);
+      color: var(--pg-accent);
     }
     .bento-link-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 13px;
+      min-width: 0;
     }
-    .bento-link-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+    .bento-link-meta {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 16px;
-      flex-shrink: 0;
+      flex-direction: column;
+      min-width: 0;
     }
     .bento-link-title {
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .bento-link-host {
+      font-size: 12px;
+      color: var(--pg-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .bento-link-arrow {
+      font-size: 12px;
       color: var(--pg-text-muted);
-      transition: transform 0.2s;
+      transition: transform 0.18s ease, color 0.18s ease;
+      flex-shrink: 0;
+      margin-left: 12px;
     }
     .bento-link:hover .bento-link-arrow {
-      transform: translateX(3px);
+      transform: translate(2px, -2px);
       color: var(--pg-accent);
     }
 
-    /* -------------------------------------------------------------
-       ENGINE 2: EDITORIAL DOCUMENT
-       ------------------------------------------------------------- */
+    /* 2. EDITORIAL DOCUMENT ENGINE */
     .editorial-container {
       width: 100%;
       max-width: 600px;
       padding: 56px 20px 24px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 28px;
     }
     .editorial-header {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 18px;
+    }
+    .editorial-top-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
     .editorial-avatar {
-      width: 64px;
-      height: 64px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       object-fit: cover;
       border: 1px solid var(--pg-card-border);
+      flex-shrink: 0;
     }
     .editorial-name {
       font-family: var(--font-serif);
-      font-size: 36px;
-      font-weight: 700;
+      font-size: 34px;
+      font-weight: 500;
       letter-spacing: -0.02em;
       line-height: 1.15;
-    }
-    .editorial-handle {
-      font-size: 13px;
-      color: var(--pg-text-muted);
-      font-family: var(--font-mono);
+      margin-bottom: 4px;
     }
     .editorial-bio {
-      font-size: 16px;
+      font-size: 15.5px;
       line-height: 1.7;
-      color: var(--pg-text);
-      font-weight: 400;
-      margin-top: 4px;
+      color: var(--pg-text-muted);
     }
     .editorial-divider {
       width: 100%;
       height: 1px;
       background: var(--pg-card-border);
     }
+    .editorial-stats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding: 14px 0;
+      border-top: 1px solid var(--pg-card-border);
+      border-bottom: 1px solid var(--pg-card-border);
+    }
+    .editorial-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .editorial-stat-lbl {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--pg-text-muted);
+    }
+    .editorial-stat-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--pg-text);
+    }
     .editorial-section-title {
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.08em;
       color: var(--pg-text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
     .editorial-links-list {
       display: flex;
       flex-direction: column;
-      gap: 1px;
+      border-top: 1px solid var(--pg-card-border);
     }
     .editorial-link-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 8px;
+      padding: 15px 6px;
       border-bottom: 1px solid var(--pg-card-border);
-      transition: all 0.15s ease;
+      transition: padding-left 0.18s ease, color 0.18s ease;
     }
     .editorial-link-row:hover {
-      padding-left: 14px;
-      background: rgba(var(--pg-accent-rgb), 0.04);
-      border-color: var(--pg-accent);
+      padding-left: 12px;
+      color: var(--pg-accent);
     }
-    .editorial-link-title {
-      font-size: 16px;
-      font-weight: 500;
-    }
-    .editorial-meta-footer {
+    .editorial-link-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
+      min-width: 0;
+    }
+    .editorial-num {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       color: var(--pg-text-muted);
-      padding-top: 12px;
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .editorial-link-ic {
+      font-size: 14px;
+      color: var(--pg-text-muted);
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .editorial-link-row:hover .editorial-link-ic {
+      color: var(--pg-accent);
+    }
+    .editorial-link-title {
+      font-size: 15.5px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* -------------------------------------------------------------
-       ENGINE 3: DEVELOPER SPEC SHEET
-       ------------------------------------------------------------- */
+    /* 3. DEVELOPER SPEC SHEET ENGINE (No Banner) */
     .dev-container {
       width: 100%;
-      max-width: 660px;
-      padding: 30px 16px 20px;
+      max-width: 650px;
+      padding: 44px 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
-    .dev-banner-card {
+    .dev-header-card {
       background: var(--pg-card-bg);
       border: 1px solid var(--pg-card-border);
-      border-radius: 20px;
-      overflow: hidden;
-      position: relative;
+      border-radius: 18px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
-    .dev-banner {
-      width: 100%;
-      height: 130px;
-      object-fit: cover;
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    .dev-top-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
     }
-    .dev-profile-block {
-      padding: 0 24px 20px;
-      position: relative;
+    .dev-identity {
+      display: flex;
+      align-items: center;
+      gap: 18px;
     }
     .dev-avatar-wrap {
       position: relative;
-      display: inline-block;
-      margin-top: -38px;
-      margin-bottom: 12px;
+      flex-shrink: 0;
     }
     .dev-avatar {
-      width: 76px;
-      height: 76px;
+      width: 88px;
+      height: 88px;
       border-radius: 18px;
       object-fit: cover;
-      border: 3px solid var(--pg-card-bg);
-      background: var(--pg-card-bg);
-    }
-    .dev-status-dot {
-      position: absolute;
-      bottom: -2px;
-      right: -2px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #10b981;
-      border: 2px solid var(--pg-card-bg);
+      border: 1px solid var(--pg-card-border);
+      display: block;
     }
     .dev-info h1 {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
       letter-spacing: -0.02em;
-    }
-    .dev-handle {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--pg-accent);
-      margin-top: 2px;
+      margin-bottom: 4px;
     }
     .dev-bio {
-      font-size: 14px;
-      color: var(--pg-text);
-      line-height: 1.6;
-      margin-top: 8px;
+      font-size: 13.5px;
+      color: var(--pg-text-muted);
+      line-height: 1.65;
     }
     .dev-telemetry {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 14px;
       font-family: var(--font-mono);
-      font-size: 11px;
+      font-size: 11.5px;
     }
     .dev-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
+      padding: 5px 10px;
       border-radius: 8px;
-      background: rgba(var(--pg-accent-rgb), 0.08);
+      background: var(--pg-surface-subtle);
       color: var(--pg-text);
       border: 1px solid var(--pg-card-border);
     }
+    .dev-badge span.lbl {
+      color: var(--pg-text-muted);
+    }
     .dev-repos-title {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       color: var(--pg-text-muted);
       font-weight: 600;
+      letter-spacing: 0.04em;
       margin-top: 4px;
     }
     .dev-cards-grid {
@@ -503,12 +644,12 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 90px;
-      transition: all 0.2s ease;
+      gap: 12px;
+      transition: border-color 0.18s ease, transform 0.18s ease;
     }
     .dev-repo-card:hover {
       border-color: var(--pg-accent);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     .dev-repo-top {
       display: flex;
@@ -516,125 +657,165 @@
       justify-content: space-between;
       gap: 8px;
     }
+    .dev-repo-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
     .dev-repo-title {
       font-family: var(--font-mono);
       font-size: 13px;
       font-weight: 600;
-      word-break: break-all;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dev-repo-host {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--pg-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* -------------------------------------------------------------
-       ENGINE 4: EXECUTIVE MINIMALIST
-       ------------------------------------------------------------- */
+    /* 4. EXECUTIVE MINIMALIST ENGINE */
     .exec-container {
       width: 100%;
-      max-width: 500px;
-      padding: 60px 16px 24px;
+      max-width: 480px;
+      padding: 56px 16px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 24px;
+      gap: 20px;
     }
     .exec-avatar {
-      width: 88px;
-      height: 88px;
+      width: 108px;
+      height: 108px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--pg-card-border);
-      box-shadow: 0 4px 14px -3px rgba(0,0,0,0.06);
+      border: 1px solid var(--pg-card-border);
     }
     .exec-name {
-      font-size: 24px;
+      font-size: 25px;
       font-weight: 700;
       letter-spacing: -0.02em;
-    }
-    .exec-handle {
-      font-size: 13px;
-      color: var(--pg-text-muted);
-      margin-top: 2px;
+      margin-bottom: 4px;
     }
     .exec-bio {
       font-size: 14px;
       color: var(--pg-text-muted);
-      line-height: 1.6;
-      max-width: 420px;
+      line-height: 1.65;
+      max-width: 400px;
+    }
+    .exec-stats-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+    .exec-stat-pill {
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--pg-text-muted);
+      background: var(--pg-card-bg);
+      border: 1px solid var(--pg-card-border);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+    .exec-stat-pill strong {
+      color: var(--pg-text);
+      font-weight: 600;
+      margin-left: 3px;
     }
     .exec-links-stack {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 8px;
+      gap: 9px;
+      margin-top: 4px;
     }
     .exec-link-strip {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 20px;
-      border-radius: 16px;
+      padding: 14px 18px;
+      border-radius: 14px;
       background: var(--pg-card-bg);
       border: 1px solid var(--pg-card-border);
-      transition: all 0.2s ease;
+      transition: border-color 0.18s ease, transform 0.18s ease;
     }
     .exec-link-strip:hover {
       border-color: var(--pg-accent);
-      transform: scale(1.01);
+      transform: translateY(-1px);
+    }
+    .exec-link-left {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+    .exec-link-ic {
+      font-size: 14px;
+      color: var(--pg-text-muted);
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .exec-link-strip:hover .exec-link-ic {
+      color: var(--pg-accent);
     }
     .exec-link-title {
       font-size: 14px;
       font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .exec-link-arrow {
       color: var(--pg-text-muted);
-      font-size: 13px;
-      transition: transform 0.2s;
+      font-size: 12px;
+      transition: transform 0.18s ease, color 0.18s ease;
+      flex-shrink: 0;
+      margin-left: 10px;
     }
     .exec-link-strip:hover .exec-link-arrow {
-      transform: translateX(4px);
+      transform: translateX(3px);
       color: var(--pg-accent);
     }
 
-    /* Common Share Button Bar */
-    .share-bar-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .share-btn-round {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 9999px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      color: var(--pg-text-muted);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .share-btn-round:hover {
-      color: var(--pg-text);
-      border-color: var(--pg-accent);
-    }
-
-    /* Responsive */
     @media (max-width: 520px) {
-      .bento-container { grid-template-columns: 1fr; }
-      .bento-stat { grid-column: span 1; }
+      .bento-stats-grid { grid-template-columns: 1fr; }
       .dev-cards-grid { grid-template-columns: 1fr; }
+      .sk-grid { grid-template-columns: 1fr; }
+      .dev-top-bar { flex-direction: column; }
     }
   </style>
 </head>
-<body data-engine="bento" data-mode="light">
+<body data-engine="bento" data-mode="light" data-animations="on">
   <div id="root">
-    <div class="loader-wrap">
-      <div class="spinner"></div>
-      <span>Loading profile...</span>
+    <div class="skeleton-shell" aria-label="Loading profile">
+      <div class="sk-card">
+        <div class="sk-row">
+          <div class="sk-avatar"></div>
+          <div class="sk-lines">
+            <div class="sk-line sk-w40"></div>
+            <div class="sk-line sk-w25"></div>
+          </div>
+        </div>
+        <div class="sk-line sk-w80"></div>
+        <div class="sk-line sk-w60"></div>
+      </div>
+      <div class="sk-grid">
+        <div class="sk-stat"></div>
+        <div class="sk-stat"></div>
+        <div class="sk-stat"></div>
+      </div>
+      <div class="sk-link"></div>
+      <div class="sk-link"></div>
     </div>
   </div>
 
@@ -658,30 +839,38 @@
     if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 
     const ICON_MAP = [
-      { m:/youtube\.com|youtu\.be/i,   i:'fa-brands fa-youtube',    c:'#ff0000' },
-      { m:/github\.com/i,               i:'fa-brands fa-github',     c:'#24292f' },
-      { m:/twitter\.com|x\.com/i,       i:'fa-brands fa-x-twitter',  c:'#000000' },
-      { m:/instagram\.com/i,            i:'fa-brands fa-instagram',  c:'#e1306c' },
-      { m:/tiktok\.com/i,               i:'fa-brands fa-tiktok',     c:'#010101' },
-      { m:/linkedin\.com/i,             i:'fa-brands fa-linkedin',   c:'#0077b5' },
-      { m:/discord\.gg|discord\.com/i,  i:'fa-brands fa-discord',    c:'#5865f2' },
-      { m:/twitch\.tv/i,                i:'fa-brands fa-twitch',     c:'#9146ff' },
-      { m:/spotify\.com/i,              i:'fa-brands fa-spotify',    c:'#1db954' },
-      { m:/whatsapp\.com|wa\.me/i,      i:'fa-brands fa-whatsapp',   c:'#25d366' },
-      { m:/t\.me|telegram\./i,          i:'fa-brands fa-telegram',   c:'#0088cc' },
-      { m:/facebook\.com/i,             i:'fa-brands fa-facebook',   c:'#1877f2' },
-      { m:/patreon\.com/i,              i:'fa-brands fa-patreon',    c:'#ff424d' },
-      { m:/reddit\.com/i,               i:'fa-brands fa-reddit',     c:'#ff4500' },
-      { m:/pinterest\.com/i,            i:'fa-brands fa-pinterest',  c:'#e60023' },
-      { m:/snapchat\.com/i,             i:'fa-brands fa-snapchat',   c:'#ffcc00' },
-      { m:/medium\.com/i,               i:'fa-brands fa-medium',     c:'#000000' },
+      { m:/youtube\.com|youtu\.be/i,   i:'fa-brands fa-youtube' },
+      { m:/github\.com/i,               i:'fa-brands fa-github' },
+      { m:/twitter\.com|x\.com/i,       i:'fa-brands fa-x-twitter' },
+      { m:/instagram\.com/i,            i:'fa-brands fa-instagram' },
+      { m:/tiktok\.com/i,               i:'fa-brands fa-tiktok' },
+      { m:/linkedin\.com/i,             i:'fa-brands fa-linkedin' },
+      { m:/discord\.gg|discord\.com/i,  i:'fa-brands fa-discord' },
+      { m:/twitch\.tv/i,                i:'fa-brands fa-twitch' },
+      { m:/spotify\.com/i,              i:'fa-brands fa-spotify' },
+      { m:/whatsapp\.com|wa\.me/i,      i:'fa-brands fa-whatsapp' },
+      { m:/t\.me|telegram\./i,          i:'fa-brands fa-telegram' },
+      { m:/facebook\.com/i,             i:'fa-brands fa-facebook' },
+      { m:/patreon\.com/i,              i:'fa-brands fa-patreon' },
+      { m:/reddit\.com/i,               i:'fa-brands fa-reddit' },
+      { m:/pinterest\.com/i,            i:'fa-brands fa-pinterest' },
+      { m:/snapchat\.com/i,             i:'fa-brands fa-snapchat' },
+      { m:/medium\.com/i,               i:'fa-brands fa-medium' },
     ];
 
-    function detectIcon(url, accent) {
+    function detectIcon(url) {
       for (const e of ICON_MAP) {
-        if (e.m.test(url)) return { icon: e.i, color: e.c };
+        if (e.m.test(url)) return e.i;
       }
-      return { icon: 'fa-solid fa-link', color: accent || '#0071e3' };
+      return 'fa-solid fa-link';
+    }
+
+    function getHostname(url) {
+      try {
+        return new URL(url).hostname.replace(/^www\./, '');
+      } catch {
+        return '';
+      }
     }
 
     function hexToRgb(hex) {
@@ -691,10 +880,11 @@
       return `${(n>>16)&255}, ${(n>>8)&255}, ${n&255}`;
     }
 
-    function defaultAvatar(name) {
+    function defaultAvatar(name, accent) {
       const c = (name||'?')[0].toUpperCase();
+      const bg = accent || '#0f172a';
       return `data:image/svg+xml,${encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><circle cx="48" cy="48" r="48" fill="#0071e3"/><text x="48" y="64" text-anchor="middle" font-size="40" font-family="Inter,sans-serif" fill="#fff" font-weight="700">${c}</text></svg>`
+        `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" fill="${bg}"/><text x="48" y="62" text-anchor="middle" font-size="38" font-family="Inter,sans-serif" fill="#ffffff" font-weight="600">${c}</text></svg>`
       )}`;
     }
 
@@ -703,26 +893,29 @@
     }
 
     function formatShortCurrency(value) {
-      if (!value) return "0";
-      if (value >= 1e9) return (value / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
-      if (value >= 1e6) return (value / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
-      if (value >= 1e3) return (value / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
-      return Number(value).toFixed(2).replace(/\.00$/, '');
+      const num = Number(value) || 0;
+      if (num === 0) return "0";
+      if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, '') + 'B';
+      if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, '') + 'M';
+      if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, '') + 'K';
+      return num % 1 === 0 ? String(num) : num.toFixed(2).replace(/\.00$/, '');
     }
 
     function render(userData) {
       const {
-        displayName, username, bio, photoURL, bannerURL,
-        links = [], appearance = {}, coins, social = {}, verified = false, profileViews = 0
+        displayName, username, bio, photoURL,
+        links = [], appearance = {}, coins, social = {}, verified = false
       } = userData;
 
-      // Extract layout engine & mode
       const engine = appearance.layoutEngine || (appearance.template === 'minimal' ? 'executive' : 'bento');
       const mode = appearance.themeMode || (appearance.template?.includes('dark') || appearance.bgType === 'gradient' ? 'dark' : 'light');
-      const accent = appearance.accentColor || '#0071e3';
+      const rawAccent = appearance.accentColor || '#0071e3';
+      const accent = (mode === 'dark' && rawAccent.toLowerCase() === '#0f172a') ? '#e2e8f0' : rawAccent;
+      const animationsOn = appearance.enableAnimations !== false;
 
       document.body.dataset.engine = engine;
       document.body.dataset.mode = mode;
+      document.body.dataset.animations = animationsOn ? 'on' : 'off';
       document.body.style.setProperty('--pg-accent', accent);
       document.body.style.setProperty('--pg-accent-rgb', hexToRgb(accent));
 
@@ -730,13 +923,12 @@
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) metaDesc.content = bio || `${displayName || username}'s profile on Syntiox`;
 
-      const pageUrl = `https://syntiox.top/u/${username}`;
+      const pageUrl = `${window.location.origin}/u/${username}`;
 
-      // Dynamic OpenGraph & Twitter Metadata (honoring showMetadataPhoto toggle)
       function updateMetaTag(attr, attrVal, content) {
         if (!content) return;
-        var selector = 'meta[' + attr + '="' + attrVal + '"]';
-        var el = document.querySelector(selector);
+        const selector = 'meta[' + attr + '="' + attrVal + '"]';
+        let el = document.querySelector(selector);
         if (!el) {
           el = document.createElement('meta');
           el.setAttribute(attr, attrVal);
@@ -746,7 +938,7 @@
       }
 
       const showPhoto = appearance.showMetadataPhoto !== false;
-      const userPhoto = (showPhoto && (photoURL || bannerURL)) || '';
+      const userPhoto = (showPhoto && photoURL) || '';
 
       updateMetaTag('property', 'og:title', `${displayName || username} | Syntiox`);
       updateMetaTag('property', 'og:description', bio || `View ${displayName || username}'s profile on Syntiox.`);
@@ -758,13 +950,12 @@
         updateMetaTag('name', 'twitter:image', userPhoto);
         updateMetaTag('name', 'twitter:card', 'summary_large_image');
       } else {
-        updateMetaTag('property', 'og:image', 'https://syntiox.top/assets/image/logo.png');
+        updateMetaTag('property', 'og:image', `${window.location.origin}/assets/image/logo.png`);
         updateMetaTag('name', 'twitter:card', 'summary');
       }
       updateMetaTag('name', 'twitter:title', `${displayName || username} | Syntiox`);
       updateMetaTag('name', 'twitter:description', bio || `View ${displayName || username}'s profile on Syntiox.`);
 
-      // Non-blocking analytics
       if (userData.uid) {
         fetch('https://account.syntiox.top/api/analytics', {
           method: 'POST',
@@ -773,35 +964,38 @@
         }).catch(() => {});
       }
 
-      // Owner edit button
       const storedUid = localStorage.getItem('syntiox_uid');
       const isOwner = storedUid && userData.uid === storedUid;
       const editBtn = isOwner
-        ? `<div class="edit-profile-bar"><a class="edit-profile-btn" href="https://account.syntiox.top"><i class="fa-solid fa-pencil"></i> Edit Profile</a></div>`
+        ? `<div class="owner-bar"><a class="owner-edit-link" href="https://account.syntiox.top"><i class="fa-solid fa-pen"></i> Edit Profile</a></div>`
         : '';
 
       const verifiedBadge = verified
         ? `<span class="verified-badge" title="Verified"><i class="fa-solid fa-check"></i></span>`
         : '';
 
-      // Toggles
+      const handleBtn = username
+        ? `<button type="button" class="handle-copy" id="btn-copy-handle" title="Copy profile link"><span>@${esc(username)}</span><i class="fa-regular fa-copy" id="copy-ic"></i></button>`
+        : '';
+
       const showWallet = appearance.showWalletBalance !== false;
       const showCoins = appearance.showCoinsBalance !== false;
       const showViews = appearance.showViewCount !== false;
       const showIcons = appearance.linkShowIcon !== false;
 
-      const walletVal = userData.wallet_balance || 0;
-      const viewsVal = userData.profileViews || 0;
+      const walletVal = userData.wallet_balance ?? 0;
+      const coinsVal = coins ?? 0;
+      const viewsVal = userData.profileViews ?? 0;
+      const avatarSrc = photoURL || defaultAvatar(displayName || username, rawAccent);
 
-      // Social links
       const SOCIAL_DEFS = [
-        { id:'github',      label:'GitHub',      icon:'fa-brands fa-github',        color:'#24292f', prefix:'https://github.com/' },
-        { id:'twitter',     label:'X (Twitter)', icon:'fa-brands fa-x-twitter',     color:'#000000', prefix:'https://x.com/' },
-        { id:'linkedin',    label:'LinkedIn',    icon:'fa-brands fa-linkedin',      color:'#0077b5', prefix:'https://linkedin.com/in/' },
-        { id:'youtube',     label:'YouTube',     icon:'fa-brands fa-youtube',       color:'#ff0000', prefix:'https://youtube.com/' },
-        { id:'telegram',    label:'Telegram',    icon:'fa-brands fa-telegram',      color:'#0088cc', prefix:'https://t.me/' },
-        { id:'whatsapp',    label:'WhatsApp',    icon:'fa-brands fa-whatsapp',      color:'#25d366', prefix:'https://wa.me/' },
-        { id:'email',       label:'Email',       icon:'fa-solid fa-envelope',       color:'#ea4335', prefix:'mailto:' },
+        { id:'github',   label:'GitHub',      icon:'fa-brands fa-github',    prefix:'https://github.com/' },
+        { id:'twitter',  label:'X (Twitter)', icon:'fa-brands fa-x-twitter', prefix:'https://x.com/' },
+        { id:'linkedin', label:'LinkedIn',    icon:'fa-brands fa-linkedin',  prefix:'https://linkedin.com/in/' },
+        { id:'youtube',  label:'YouTube',     icon:'fa-brands fa-youtube',   prefix:'https://youtube.com/' },
+        { id:'telegram', label:'Telegram',    icon:'fa-brands fa-telegram',  prefix:'https://t.me/' },
+        { id:'whatsapp', label:'WhatsApp',    icon:'fa-brands fa-whatsapp',  prefix:'https://wa.me/' },
+        { id:'email',    label:'Email',       icon:'fa-solid fa-envelope',   prefix:'mailto:' },
       ];
 
       const socialHtml = SOCIAL_DEFS.filter(s => social[s.id]).map(s => {
@@ -809,14 +1003,12 @@
         if (s.id === 'linkedin' && val.startsWith('in/')) val = val.slice(3);
         const rawUrl = `${s.prefix}${val}`;
         const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=Social%3A%20${encodeURIComponent(s.label||s.id)}&url=${encodeURIComponent(rawUrl)}`;
-        return `<a class="social-ic" href="${esc(redirectUrl)}" style="background:${s.color};" target="_blank" rel="noopener" title="${esc(s.label||s.id)}"><i class="${s.icon}"></i></a>`;
+        return `<a class="social-ic" href="${esc(redirectUrl)}" target="_blank" rel="noopener" title="${esc(s.label||s.id)}"><i class="${s.icon}"></i></a>`;
       }).join('');
 
       let contentHtml = '';
 
-      // -------------------------------------------------------------
       // 1. BENTO GRID ENGINE
-      // -------------------------------------------------------------
       if (engine === 'bento') {
         const statsWidgets = [];
         if (showWallet) {
@@ -826,13 +1018,14 @@
               <span class="bento-stat-val">$${formatShortCurrency(walletVal)}</span>
             </div>`);
         }
-        if (showCoins && coins != null) {
+        if (showCoins) {
           statsWidgets.push(`
             <div class="bento-card bento-stat">
               <span class="bento-stat-lbl">API Coins</span>
-              <span class="bento-stat-val">${formatShortCurrency(coins)}</span>
+              <span class="bento-stat-val">${formatShortCurrency(coinsVal)}</span>
             </div>`);
-        } else if (showViews) {
+        }
+        if (showViews) {
           statsWidgets.push(`
             <div class="bento-card bento-stat">
               <span class="bento-stat-lbl">Profile Views</span>
@@ -841,13 +1034,17 @@
         }
 
         const linksBento = links.map(link => {
-          const { icon, color } = detectIcon(link.url, accent);
+          const icon = detectIcon(link.url);
+          const host = getHostname(link.url);
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
           return `
             <a class="bento-link" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
               <div class="bento-link-left">
-                ${showIcons ? `<div class="bento-link-icon" style="background:${color};"><i class="${icon}"></i></div>` : ''}
-                <span class="bento-link-title">${esc(link.title || 'Link')}</span>
+                ${showIcons ? `<div class="link-ic-box"><i class="${icon}"></i></div>` : ''}
+                <div class="bento-link-meta">
+                  <span class="bento-link-title">${esc(link.title || 'Link')}</span>
+                  ${host ? `<span class="bento-link-host">${esc(host)}</span>` : ''}
+                </div>
               </div>
               <i class="fa-solid fa-arrow-up-right-from-square bento-link-arrow"></i>
             </a>`;
@@ -856,122 +1053,134 @@
         contentHtml = `
           <div class="bento-container">
             ${editBtn}
-            <div class="bento-card bento-hero">
+            <div class="bento-card bento-hero anim-item">
               <div class="bento-hero-top">
-                <img class="bento-avatar" src="${photoURL || defaultAvatar(displayName)}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+                <img class="bento-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
                 <div class="bento-hero-info">
                   <h1>${esc(displayName || username || 'User')}${verifiedBadge}</h1>
-                  ${username ? `<p class="bento-handle">@${esc(username)}</p>` : ''}
+                  ${handleBtn}
                 </div>
               </div>
               ${bio ? `<p class="bento-bio">${esc(bio)}</p>` : ''}
-              ${socialHtml ? `<div class="bento-social-row">${socialHtml}</div>` : ''}
+              ${socialHtml ? `<div class="social-row">${socialHtml}</div>` : ''}
             </div>
-            ${statsWidgets.join('')}
-            ${linksBento}
+            ${statsWidgets.length ? `<div class="bento-stats-grid anim-item anim-d1">${statsWidgets.join('')}</div>` : ''}
+            ${linksBento ? `<div class="bento-links-list anim-item anim-d2">${linksBento}</div>` : ''}
           </div>`;
       }
 
-      // -------------------------------------------------------------
       // 2. EDITORIAL DOCUMENT ENGINE
-      // -------------------------------------------------------------
       else if (engine === 'editorial') {
+        const editorialStats = [];
+        if (showWallet) editorialStats.push(`<div class="editorial-stat-item"><span class="editorial-stat-lbl">Wallet</span><span class="editorial-stat-val">$${formatShortCurrency(walletVal)}</span></div>`);
+        if (showCoins) editorialStats.push(`<div class="editorial-stat-item"><span class="editorial-stat-lbl">API Coins</span><span class="editorial-stat-val">${formatShortCurrency(coinsVal)}</span></div>`);
+        if (showViews) editorialStats.push(`<div class="editorial-stat-item"><span class="editorial-stat-lbl">Views</span><span class="editorial-stat-val">${formatShortCurrency(viewsVal)}</span></div>`);
+
         const linksEditorial = links.map((link, idx) => {
+          const icon = detectIcon(link.url);
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
           const num = String(idx + 1).padStart(2, '0');
           return `
             <a class="editorial-link-row" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
-              <div style="display:flex;align-items:center;gap:12px;">
-                <span style="font-family:var(--font-mono);font-size:12px;color:var(--pg-text-muted);">${num}</span>
+              <div class="editorial-link-left">
+                <span class="editorial-num">${num}</span>
+                ${showIcons ? `<i class="${icon} editorial-link-ic"></i>` : ''}
                 <span class="editorial-link-title">${esc(link.title || 'Link')}</span>
               </div>
-              <i class="fa-solid fa-arrow-right" style="font-size:12px;color:var(--pg-text-muted);"></i>
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;color:var(--pg-text-muted);"></i>
             </a>`;
         }).join('');
 
         contentHtml = `
           <div class="editorial-container">
             ${editBtn}
-            <div class="editorial-header">
-              <img class="editorial-avatar" src="${photoURL || defaultAvatar(displayName)}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
-              <div>
-                <h1 class="editorial-name">${esc(displayName || username || 'User')}${verifiedBadge}</h1>
-                ${username ? `<p class="editorial-handle">@${esc(username)}</p>` : ''}
+            <div class="editorial-header anim-item">
+              <div class="editorial-top-row">
+                <img class="editorial-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+                <div>
+                  <h1 class="editorial-name">${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+                  ${handleBtn}
+                </div>
               </div>
               ${bio ? `<p class="editorial-bio">${esc(bio)}</p>` : ''}
-              ${socialHtml ? `<div style="display:flex;gap:8px;margin-top:8px;">${socialHtml}</div>` : ''}
+              ${socialHtml ? `<div class="social-row">${socialHtml}</div>` : ''}
             </div>
-            <div class="editorial-divider"></div>
-            <div>
-              <p class="editorial-section-title">Selected Works & Links</p>
-              <div class="editorial-links-list">${linksEditorial}</div>
-            </div>
-            <div class="editorial-meta-footer">
-              ${showViews ? `<span>VIEWS: ${formatShortCurrency(viewsVal)}</span>` : ''}
-              ${showCoins && coins != null ? `<span>COINS: ${formatShortCurrency(coins)}</span>` : ''}
-              ${showWallet ? `<span>BAL: $${formatShortCurrency(walletVal)}</span>` : ''}
-            </div>
+            ${editorialStats.length ? `<div class="editorial-stats-bar anim-item anim-d1">${editorialStats.join('')}</div>` : `<div class="editorial-divider"></div>`}
+            ${linksEditorial ? `
+              <div class="anim-item anim-d2">
+                <p class="editorial-section-title">Index &amp; Links</p>
+                <div class="editorial-links-list">${linksEditorial}</div>
+              </div>` : ''}
           </div>`;
       }
 
-      // -------------------------------------------------------------
       // 3. DEVELOPER SPEC SHEET ENGINE
-      // -------------------------------------------------------------
       else if (engine === 'dev-spec') {
+        const devBadges = [];
+        if (showWallet) devBadges.push(`<span class="dev-badge"><span class="lbl">WALLET</span> $${formatShortCurrency(walletVal)}</span>`);
+        if (showCoins) devBadges.push(`<span class="dev-badge"><span class="lbl">COINS</span> ${formatShortCurrency(coinsVal)}</span>`);
+        if (showViews) devBadges.push(`<span class="dev-badge"><span class="lbl">VIEWS</span> ${formatShortCurrency(viewsVal)}</span>`);
+
         const linksDev = links.map(link => {
-          const { icon, color } = detectIcon(link.url, accent);
+          const icon = detectIcon(link.url);
+          const host = getHostname(link.url) || 'endpoint';
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
           return `
             <a class="dev-repo-card" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
               <div class="dev-repo-top">
-                <span class="dev-repo-title">${esc(link.title || 'Link')}</span>
-                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;color:var(--pg-accent);"></i>
+                <div class="dev-repo-title-wrap">
+                  ${showIcons ? `<i class="${icon}" style="color:var(--pg-text-muted);font-size:14px;"></i>` : ''}
+                  <span class="dev-repo-title">${esc(link.title || 'Link')}</span>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;color:var(--pg-text-muted);"></i>
               </div>
-              <div style="font-size:12px;color:var(--pg-text-muted);display:flex;align-items:center;gap:6px;">
-                ${showIcons ? `<i class="${icon}" style="color:${color};"></i>` : ''}
-                <span>service // link</span>
-              </div>
+              <span class="dev-repo-host">${esc(host)}</span>
             </a>`;
         }).join('');
 
         contentHtml = `
           <div class="dev-container">
             ${editBtn}
-            <div class="dev-banner-card">
-              ${bannerURL ? `<img class="dev-banner" src="${esc(bannerURL)}" alt="Banner" referrerpolicy="no-referrer" />` : `<div class="dev-banner"></div>`}
-              <div class="dev-profile-block">
-                <div class="dev-avatar-wrap">
-                  <img class="dev-avatar" src="${photoURL || defaultAvatar(displayName)}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
-                  <div class="dev-status-dot" title="Active"></div>
+            <div class="dev-header-card anim-item">
+              <div class="dev-top-bar">
+                <div class="dev-identity">
+                  <div class="dev-avatar-wrap">
+                    <img class="dev-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+                  </div>
+                  <div class="dev-info">
+                    <h1>${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+                    ${handleBtn}
+                  </div>
                 </div>
-                <div class="dev-info">
-                  <h1>${esc(displayName || username || 'User')}${verifiedBadge}</h1>
-                  ${username ? `<p class="dev-handle">@${esc(username)}</p>` : ''}
-                  ${bio ? `<p class="dev-bio">${esc(bio)}</p>` : ''}
-                </div>
-                <div class="dev-telemetry">
-                  <span class="dev-badge"><i class="fa-solid fa-circle" style="color:#10b981;font-size:8px;"></i> STATUS: ACTIVE</span>
-                  ${showWallet ? `<span class="dev-badge"><i class="fa-solid fa-wallet"></i> BAL: $${formatShortCurrency(walletVal)}</span>` : ''}
-                  ${showCoins && coins != null ? `<span class="dev-badge"><i class="fa-solid fa-coins"></i> COINS: ${formatShortCurrency(coins)}</span>` : ''}
-                  ${showViews ? `<span class="dev-badge"><i class="fa-solid fa-eye"></i> ${formatShortCurrency(viewsVal)} IMPR</span>` : ''}
-                </div>
-                ${socialHtml ? `<div style="display:flex;gap:8px;margin-top:14px;">${socialHtml}</div>` : ''}
               </div>
+              ${bio ? `<p class="dev-bio">${esc(bio)}</p>` : ''}
+              ${devBadges.length ? `<div class="dev-telemetry">${devBadges.join('')}</div>` : ''}
+              ${socialHtml ? `<div class="social-row">${socialHtml}</div>` : ''}
             </div>
-            <p class="dev-repos-title">// PINNED_SERVICES_&_LINKS</p>
-            <div class="dev-cards-grid">${linksDev}</div>
+            ${linksDev ? `
+              <div class="anim-item anim-d1" style="display:flex;flex-direction:column;gap:10px;">
+                <p class="dev-repos-title">// PINNED_LINKS</p>
+                <div class="dev-cards-grid">${linksDev}</div>
+              </div>` : ''}
           </div>`;
       }
 
-      // -------------------------------------------------------------
       // 4. EXECUTIVE MINIMALIST ENGINE
-      // -------------------------------------------------------------
       else {
+        const execStats = [];
+        if (showWallet) execStats.push(`<span class="exec-stat-pill">Wallet <strong>$${formatShortCurrency(walletVal)}</strong></span>`);
+        if (showCoins) execStats.push(`<span class="exec-stat-pill">Coins <strong>${formatShortCurrency(coinsVal)}</strong></span>`);
+        if (showViews) execStats.push(`<span class="exec-stat-pill">Views <strong>${formatShortCurrency(viewsVal)}</strong></span>`);
+
         const linksExec = links.map(link => {
+          const icon = detectIcon(link.url);
           const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
           return `
             <a class="exec-link-strip" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
-              <span class="exec-link-title">${esc(link.title || 'Link')}</span>
+              <div class="exec-link-left">
+                ${showIcons ? `<i class="${icon} exec-link-ic"></i>` : ''}
+                <span class="exec-link-title">${esc(link.title || 'Link')}</span>
+              </div>
               <i class="fa-solid fa-chevron-right exec-link-arrow"></i>
             </a>`;
         }).join('');
@@ -979,57 +1188,45 @@
         contentHtml = `
           <div class="exec-container">
             ${editBtn}
-            <img class="exec-avatar" src="${photoURL || defaultAvatar(displayName)}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
-            <div>
+            <img class="exec-avatar anim-item" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+            <div class="anim-item">
               <h1 class="exec-name">${esc(displayName || username || 'User')}${verifiedBadge}</h1>
-              ${username ? `<p class="exec-handle">@${esc(username)}</p>` : ''}
+              ${handleBtn}
             </div>
-            ${bio ? `<p class="exec-bio">${esc(bio)}</p>` : ''}
-            ${socialHtml ? `<div style="display:flex;gap:8px;justify-content:center;">${socialHtml}</div>` : ''}
-            <div class="exec-links-stack">${linksExec}</div>
+            ${bio ? `<p class="exec-bio anim-item anim-d1">${esc(bio)}</p>` : ''}
+            ${execStats.length ? `<div class="exec-stats-row anim-item anim-d1">${execStats.join('')}</div>` : ''}
+            ${socialHtml ? `<div class="social-row anim-item anim-d1" style="justify-content:center;">${socialHtml}</div>` : ''}
+            ${linksExec ? `<div class="exec-links-stack anim-item anim-d2">${linksExec}</div>` : ''}
           </div>`;
       }
 
-      // Render root container
       document.getElementById('root').innerHTML = `
         ${contentHtml}
-        <div class="share-bar-pill">
-          <button class="share-btn-round" id="btn-copy-link">
-            <i class="fa-solid fa-link"></i> Copy Link
-          </button>
-          ${navigator.share ? `<button class="share-btn-round" id="btn-share"><i class="fa-solid fa-arrow-up-from-bracket"></i> Share</button>` : ''}
-        </div>
-        <div class="syntiox-badge">
-          <a href="https://syntiox.top" target="_blank" rel="noopener">
-            <img src="https://syntiox.top/assets/image/logo.png" alt="Syntiox" />
-            Built with Syntiox
+        <div class="syntiox-footer">
+          <a href="/">
+            <img src="/assets/image/logo.png" alt="Syntiox" />
+            <span>Syntiox</span>
           </a>
         </div>`;
 
-      // Copy & share listeners
-      document.getElementById('btn-copy-link')?.addEventListener('click', () => {
+      document.getElementById('btn-copy-handle')?.addEventListener('click', () => {
         navigator.clipboard.writeText(pageUrl).then(() => {
-          const btn = document.getElementById('btn-copy-link');
-          const orig = btn.innerHTML;
-          btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
-          setTimeout(() => btn.innerHTML = orig, 2200);
-        }).catch(()=>{});
+          const ic = document.getElementById('copy-ic');
+          if (!ic) return;
+          ic.className = 'fa-solid fa-check';
+          setTimeout(() => { ic.className = 'fa-regular fa-copy'; }, 1800);
+        }).catch(() => {});
       });
-
-      if (navigator.share) {
-        document.getElementById('btn-share')?.addEventListener('click', () =>
-          navigator.share({ title: `${displayName}'s profile`, url: pageUrl })
-        );
-      }
     }
 
     function renderError(code, msg) {
       document.getElementById('root').innerHTML = `
-        <div style="min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;">
-          <h1 style="font-size:48px;font-weight:800;color:var(--pg-accent);margin-bottom:8px;">${code}</h1>
-          <p style="color:var(--pg-text-muted);font-size:16px;margin-bottom:24px;">${msg}</p>
-          <a href="https://syntiox.top" style="display:inline-flex;align-items:center;gap:8px;padding:8px 18px;border-radius:9999px;background:var(--pg-card-bg);border:1px solid var(--pg-card-border);font-size:13px;font-weight:600;">
-            ← Return to Syntiox
+        <div style="min-height:75vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;">
+          <p style="font-family:var(--font-mono);font-size:12px;color:var(--pg-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">${esc(code)}</p>
+          <h1 style="font-family:var(--font-serif);font-size:32px;font-weight:500;margin-bottom:10px;">Profile Unavailable</h1>
+          <p style="color:var(--pg-text-muted);font-size:14.5px;margin-bottom:24px;max-width:340px;">${msg}</p>
+          <a href="/" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border-radius:999px;background:var(--pg-card-bg);border:1px solid var(--pg-card-border);font-size:13px;font-weight:500;">
+            ← Back to Syntiox
           </a>
         </div>`;
     }
@@ -1039,21 +1236,21 @@
       const pathMatch = window.location.pathname.match(/^\/u\/([^/]+)/);
       const handle = (pathMatch && pathMatch[1]) || params.get('handle') || params.get('u') || '';
 
-      if (!handle) { renderError('404', 'No username specified.'); return; }
+      if (!handle) { renderError('404', 'No username was specified in the URL.'); return; }
 
       try {
         const db = firebase.firestore();
         const uSnap = await db.collection('usernames').doc(handle.toLowerCase()).get();
-        if (!uSnap.exists) { renderError('404', `@${esc(handle)} doesn't exist on Syntiox.`); return; }
+        if (!uSnap.exists) { renderError('404', `@${esc(handle)} is not registered on Syntiox.`); return; }
 
         const snap = await db.collection('users').doc(uSnap.data().uid).get();
-        if (!snap.exists) { renderError('404', 'Profile not found.'); return; }
-        if (snap.data().isPublic === false) { renderError('Private', 'This profile is private.'); return; }
+        if (!snap.exists) { renderError('404', 'This profile could not be found.'); return; }
+        if (snap.data().isPublic === false) { renderError('Private', 'This profile has been set to private by its owner.'); return; }
 
         render({ ...snap.data(), uid: snap.id });
       } catch(err) {
         console.error('[Profile]', err);
-        renderError('Error', 'Could not load profile. Try again later.');
+        renderError('Error', 'Unable to load profile right now. Please try again shortly.');
       }
     }
 
