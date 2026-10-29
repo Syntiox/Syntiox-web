@@ -5,55 +5,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 Not Found — Syntiox</title>
-    <meta name="description" content="The page you are looking for does not exist.">
+    <meta name="description" content="The requested resource could not be found on Syntiox.">
     <meta name="robots" content="noindex, follow">
+    <link rel="icon" type="image/png" href="/assets/image/logo.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=Inter:ital,opsz,wght@0,14..32,300..600;1,14..32,400&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="/assets/image/logo.png">
 
-    <link rel="stylesheet" href="/assets/css/404.css">
+    <link rel="stylesheet" href="/assets/css/editorial.css">
 </head>
 
 <body>
-    <div class="bg-grid"></div>
-    <a href="/" class="logo">
-        <img src="/assets/image/logo.png" alt="Syntiox">
-        Syntiox
-    </a>
-    <div class="content">
-        <div class="error-code">404</div>
-        <h1>Lost in the void</h1>
-        <p>The page you're looking for doesn't exist or has been moved to another dimension. Let's get you back to
-            familiar territory.</p>
-        <a href="/" class="btn-home">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-            Return to Homepage
-        </a>
+
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <div class="container top-nav-inner">
+            <a href="/" class="nav-brand" id="nav-brand-logo">
+                <img src="/assets/image/logo.png" alt="Syntiox" class="nav-brand-img">
+                <span class="nav-brand-name">Syntiox</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links-cluster">
+                    <li><a href="/" class="nav-item-link">Home</a></li>
+                    <li><a href="/products" class="nav-item-link">Products</a></li>
+                    <li><a href="/about" class="nav-item-link">About</a></li>
+                    <li><a href="/support" class="nav-item-link">Support</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions-group">
+                <a href="/support" class="nav-pill-btn primary">Get in Touch</a>
+                <button class="nav-hamburger" id="nav-hamburger-btn" aria-label="Toggle Navigation">
+                    <span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Nav Overlay -->
+    <div class="mobile-nav-panel" id="mobile-nav-panel">
+        <a href="/" class="mobile-nav-item">Home</a>
+        <a href="/products" class="mobile-nav-item">Products</a>
+        <a href="/about" class="mobile-nav-item">About Syntiox</a>
+        <a href="/support" class="mobile-nav-item">Support &amp; Contact</a>
     </div>
 
-    <script>
-        window.SyntioxWidget = {
-            botName: 'Syntiox AI',
-            accent: '#0071e3',
-            accent2: '#0058b3',
-            theme: 'light',
-            welcomeTitle: 'Welcome to Syntiox! 🚀',
-            welcomeMessage: 'Looking for custom AI solutions or software development? Let\'s build something extraordinary together. How can I help you today?',
-            quickButtons: [
-                { label: '🛠️ Our Services', question: 'What services does Syntiox offer?' },
-                { label: '🤖 ATOM MD Bot', question: 'Tell me about the free ATOM MD WhatsApp bot.' },
-                { label: '🔗 API System', question: 'What APIs does Syntiox provide?' },
-                { label: '📞 Contact Us', question: 'How can I contact Syntiox?' }
-            ],
-            systemPrompt: 'You are the official AI sales assistant for Syntiox (syntiox.top). Your goal is to attract customers, showcase our products and services, and strongly encourage visitors to contact us or use our services. Be friendly, enthusiastic, professional, and persuasive. Reply in Sinhala or English depending on the user\'s language.\n\n## OUR PRODUCTS:\n\n1. **ATOM MD** — A 100% FREE WhatsApp bot that ANYONE can use with ZERO coding knowledge. Connect it to your own number and enjoy features like: Auto Status Save, Status View, AI Chat, Google Workshop + AI, and many more advanced AI features. Perfect for personal or business use.\n\n2. **Syntiox API System** (https://atom.syntiox.top) — A powerful API platform with FREE trial and Paid plans. APIs include: YouTube Song/Video Download, X (Twitter) Video Download, TikTok Download, Facebook Download, Movies, Sinhala Subtitled Movies, and many more.\n\n3. **Syntiox AI** — Our AI assistant platform powering this very chat and available for custom integrations.\n\n## OUR SERVICES (Custom Development):\n\n- **Web Development** — Professional websites built with HTML, CSS, JS (NOT WordPress — real custom code)\n- **Backend Development** — Scalable server-side systems and APIs\n- **AI Systems** — Custom AI solutions tailored to your business\n- **WhatsApp Bot Development** — Custom WhatsApp bots for automation\n- **Telegram Bot Development** — Custom Telegram bots\n- **Custom AI Fine-Tuning** — Fine-tune AI models specifically for your business/service so you get your own personalized AI\n- **AI Agent Systems** — Autonomous AI agents for complex workflows\n- **Game Top-Up Service** — Game credit/diamond top-ups\n\n## PRICING:\nPricing depends on the project. Encourage users to contact us via WhatsApp or Email to discuss and get a quote.\n\n## CONTACT & LINKS:\n- **WhatsApp:** 94761358233\n- **Telegram:** @Syntiox\n- **Email:** contact@syntiox.top\n- **Contact Page:** /contact\n- **WhatsApp Channel (Tech & AI Updates):** https://whatsapp.com/channel/0029VbCqPsRC1FuEMz7ICY1o — Encourage everyone to join for latest tech and AI updates!\n\n## BEHAVIOR RULES:\n- Always try to guide users toward using our services or contacting us\n- Highlight that ATOM MD is completely FREE and needs no coding\n- When users ask about pricing, tell them to inbox us on WhatsApp or email for a custom quote\n- Be enthusiastic about our products — make them sound exciting\n- If a user seems interested, push them to take action (contact us, try ATOM MD, check our APIs)\n- Never say we cannot do something — redirect to contacting us to discuss possibilities'
-        };
-    </script>
+    <!-- 404 Content -->
+    <section class="editorial-error-section">
+        <div class="container">
+            <div class="editorial-error-box">
+                <span class="caption-label">STATUS // HTTP 404</span>
+                <div class="editorial-error-code">404</div>
+                <h1 class="display-md" style="margin-bottom: 12px;">Resource not found.</h1>
+                <p style="font-size: 14.5px; color: var(--body); line-height: 1.62; margin-bottom: 28px;">
+                    The page or endpoint you requested does not exist or has been relocated. Use the links below to return to the Syntiox platform.
+                </p>
+                <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                    <a href="/" class="btn-pill-dark">
+                        Return to Home
+                    </a>
+                    <a href="/products" class="link-arrow-understated">
+                        Explore Products →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="editorial-footer">
+        <div class="container">
+            <div class="footer-bottom-bar" style="border-top: none; padding-top: 0;">
+                <div>© <span class="dynamic-year">2026</span> Syntiox Organization. All rights reserved.</div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/editorial.js"></script>
     <script src="https://account.syntiox.top/assets/js/sso-client.js?v=3"></script>
     <script src="https://ai.syntiox.top/widget.js"></script>
 </body>

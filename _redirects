@@ -1,2 +1,5 @@
 https://syntiox.pages.dev/* https://syntiox.top/:splat 301
+/contact /support 301
+/contact.html /support 301
+/product /products 301
 /u/* /profile.html 200

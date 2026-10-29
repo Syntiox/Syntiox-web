@@ -1,4 +1,21 @@
 {
+  "redirects": [
+    {
+      "source": "/contact",
+      "destination": "/support",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/support",
+      "permanent": true
+    },
+    {
+      "source": "/product",
+      "destination": "/products",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/u/:username",
@@ -7,4 +24,3 @@
   ],
   "cleanUrls": true
 }
-
