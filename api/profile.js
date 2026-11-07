@@ -8,6 +8,37 @@ const RATE_LIMIT_WINDOW_SECS = 120; // 2 minutes
 const MAX_REQUESTS_PER_WINDOW = 20; // Max 20 requests per 2 minutes per IP
 const PROFILE_CACHE_TTL_SECS = 30 * 24 * 60 * 60; // 30 days sliding expiration
 
+// Helper to convert Firestore REST values to plain JS objects
+function parseFirestoreValue(val) {
+  if (!val || typeof val !== 'object') return null;
+  if ('stringValue' in val) return val.stringValue;
+  if ('booleanValue' in val) return val.booleanValue;
+  if ('integerValue' in val) return parseInt(val.integerValue, 10);
+  if ('doubleValue' in val) return parseFloat(val.doubleValue);
+  if ('timestampValue' in val) return val.timestampValue;
+  if ('nullValue' in val) return null;
+  if ('arrayValue' in val) {
+    return (val.arrayValue.values || []).map(parseFirestoreValue);
+  }
+  if ('mapValue' in val) {
+    const out = {};
+    const fields = val.mapValue.fields || {};
+    for (const [k, v] of Object.entries(fields)) {
+      out[k] = parseFirestoreValue(v);
+    }
+    return out;
+  }
+  return null;
+}
+
+function parseFirestoreFields(fields) {
+  const out = {};
+  for (const [k, v] of Object.entries(fields || {})) {
+    out[k] = parseFirestoreValue(v);
+  }
+  return out;
+}
+
 // Distributed rate limiting via Upstash Redis pipeline
 async function isRateLimited(ip) {
   if (!REDIS_URL || !REDIS_TOKEN) return false;
@@ -33,7 +64,7 @@ async function isRateLimited(ip) {
   }
 }
 
-// Fetch cached profile from Upstash Redis and renew sliding 30-day TTL
+// Fetch cached full profile from Upstash Redis and renew sliding 30-day TTL
 async function getCachedProfile(cacheKey) {
   if (!REDIS_URL || !REDIS_TOKEN) return null;
   try {
@@ -50,7 +81,12 @@ async function getCachedProfile(cacheKey) {
     if (!data.result) return null;
     const parsed = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
 
-    // Renew 30-day sliding TTL on view
+    // Detect and discard old metadata-only cache format
+    if (parsed && !parsed.appearance && !parsed.links && !parsed.uid) {
+      return null;
+    }
+
+    // Renew 30-day sliding TTL on access
     fetch(REDIS_URL, {
       method: 'POST',
       headers: {
@@ -66,7 +102,7 @@ async function getCachedProfile(cacheKey) {
   }
 }
 
-// Store profile in Upstash Redis with 30-day TTL
+// Store full profile in Upstash Redis with 30-day TTL
 async function setCachedProfile(cacheKey, profileData) {
   if (!REDIS_URL || !REDIS_TOKEN) return;
   try {
@@ -79,6 +115,22 @@ async function setCachedProfile(cacheKey, profileData) {
       body: JSON.stringify(['SET', cacheKey, JSON.stringify(profileData), 'EX', PROFILE_CACHE_TTL_SECS]),
     }).catch(() => {});
   } catch {}
+}
+
+function fetchHttpsJson(url) {
+  return new Promise((resolve, reject) => {
+    https.get(url, { headers: { 'User-Agent': 'Syntiox-Serverless/1.0' } }, (response) => {
+      let data = '';
+      response.on('data', chunk => data += chunk);
+      response.on('end', () => {
+        if (response.statusCode === 200) {
+          try { resolve(JSON.parse(data)); } catch (e) { resolve(null); }
+        } else {
+          resolve(null);
+        }
+      });
+    }).on('error', reject);
+  });
 }
 
 export default async function handler(req, res) {
@@ -102,80 +154,45 @@ export default async function handler(req, res) {
     const htmlPath = path.join(process.cwd(), 'profile.html');
     let html = fs.readFileSync(htmlPath, 'utf8');
 
-    // 1. Check Redis Cache First
-    let profileMeta = await getCachedProfile(cacheKey);
+    // 1. Check Redis Cache First for Complete User Profile
+    let userData = await getCachedProfile(cacheKey);
 
-    // 2. Cache Miss: Fetch from Firestore
-    if (!profileMeta) {
-      const usernameRes = await new Promise((resolve, reject) => {
-        https.get(`https://firestore.googleapis.com/v1/projects/syntiox-services/databases/(default)/documents/usernames/${encodeURIComponent(cleanHandle)}`, (response) => {
-          let data = '';
-          response.on('data', chunk => data += chunk);
-          response.on('end', () => {
-            if (response.statusCode === 200) {
-              resolve(JSON.parse(data));
-            } else {
-              resolve(null);
-            }
-          });
-        }).on('error', reject);
-      });
+    // 2. Cache Miss: Fetch from Firestore REST API
+    if (!userData) {
+      const usernameDoc = await fetchHttpsJson(`https://firestore.googleapis.com/v1/projects/syntiox-services/databases/(default)/documents/usernames/${encodeURIComponent(cleanHandle)}`);
 
-      if (!usernameRes || !usernameRes.fields || !usernameRes.fields.uid) {
+      if (!usernameDoc || !usernameDoc.fields || !usernameDoc.fields.uid) {
+        // User not registered
+        const errorState = { code: '404', msg: `@${cleanHandle} is not registered on Syntiox.` };
+        const scriptInjection = `<script>window.__INITIAL_ERROR__ = ${JSON.stringify(errorState).replace(/</g, '\\u003c')};</script>`;
+        html = html.replace('</head>', `${scriptInjection}\n</head>`);
         res.setHeader('Content-Type', 'text/html');
-        return res.status(200).send(html);
+        return res.status(404).send(html);
       }
 
-      const uid = usernameRes.fields.uid.stringValue;
+      const uid = usernameDoc.fields.uid.stringValue;
+      const userDoc = await fetchHttpsJson(`https://firestore.googleapis.com/v1/projects/syntiox-services/databases/(default)/documents/users/${uid}`);
 
-      const userRes = await new Promise((resolve, reject) => {
-        https.get(`https://firestore.googleapis.com/v1/projects/syntiox-services/databases/(default)/documents/users/${uid}`, (response) => {
-          let data = '';
-          response.on('data', chunk => data += chunk);
-          response.on('end', () => {
-            if (response.statusCode === 200) {
-              resolve(JSON.parse(data));
-            } else {
-              resolve(null);
-            }
-          });
-        }).on('error', reject);
-      });
+      if (userDoc && userDoc.fields) {
+        userData = parseFirestoreFields(userDoc.fields);
+        userData.uid = uid;
 
-      if (userRes && userRes.fields) {
-        const f = userRes.fields;
-        const name = f.displayName ? f.displayName.stringValue : (f.name ? f.name.stringValue : handle);
-        const bio = f.bio ? f.bio.stringValue : `View ${name}'s profile on Syntiox.`;
-
-        let showPhoto = true;
-        if (f.appearance && f.appearance.mapValue && f.appearance.mapValue.fields) {
-          const appFields = f.appearance.mapValue.fields;
-          if (appFields.showMetadataPhoto && appFields.showMetadataPhoto.booleanValue !== undefined) {
-            showPhoto = appFields.showMetadataPhoto.booleanValue !== false;
-          }
-        }
-
-        const rawUserPhoto = (f.photoURL && f.photoURL.stringValue)
-          || (f.avatar && f.avatar.stringValue)
-          || '';
-
-        const photoURL = (showPhoto && rawUserPhoto)
-          ? rawUserPhoto
-          : 'https://syntiox.top/assets/image/logo.png';
-
-        const cardType = (showPhoto && rawUserPhoto) ? 'summary_large_image' : 'summary';
-        const title = `${name} | Syntiox`;
-
-        profileMeta = { name, bio, photoURL, cardType, title };
-
-        // Save to Redis Cache (30-day sliding TTL)
-        await setCachedProfile(cacheKey, profileMeta);
+        // Store Full Profile in Redis (30-day sliding TTL)
+        await setCachedProfile(cacheKey, userData);
       }
     }
 
-    // 3. Inject Dynamic Meta Tags
-    if (profileMeta) {
-      const { name, bio, photoURL, cardType, title } = profileMeta;
+    // 3. Inject Full Profile Data & Dynamic Meta Tags
+    if (userData) {
+      const name = userData.displayName || userData.name || userData.username || cleanHandle;
+      const bio = userData.bio || `View ${name}'s profile on Syntiox.`;
+      const title = `${name} | Syntiox`;
+
+      const rawPhoto = userData.photoURL || userData.avatar || userData.avatarUrl || '';
+      const showPhoto = userData.appearance?.showMetadataPhoto !== false;
+      const ogPhoto = (showPhoto && rawPhoto) ? rawPhoto : 'https://syntiox.top/assets/image/logo.png';
+      const cardType = (showPhoto && rawPhoto) ? 'summary_large_image' : 'summary';
+
       const metaTags = `
   <title>${title}</title>
   <meta name="description" content="${bio}">
@@ -185,21 +202,23 @@ export default async function handler(req, res) {
   <meta property="og:url" content="https://syntiox.top/u/${cleanHandle}">
   <meta property="og:title" content="${title}">
   <meta property="og:description" content="${bio}">
-  <meta property="og:image" content="${photoURL}">
+  <meta property="og:image" content="${ogPhoto}">
 
   <!-- Twitter -->
   <meta name="twitter:card" content="${cardType}">
   <meta name="twitter:url" content="https://syntiox.top/u/${cleanHandle}">
   <meta name="twitter:title" content="${title}">
   <meta name="twitter:description" content="${bio}">
-  <meta name="twitter:image" content="${photoURL}">
+  <meta name="twitter:image" content="${ogPhoto}">
 `;
+
+      const scriptInjection = `<script>window.__INITIAL_PROFILE__ = ${JSON.stringify(userData).replace(/</g, '\\u003c')};</script>`;
 
       html = html.replace(/<title>.*?<\/title>/gi, '');
       html = html.replace(/<meta\s+name=["']description["'][^>]*>/gi, '');
       html = html.replace(/<meta\s+(?:property|name)=["'](?:og|twitter):[^"']*["'][^>]*>/gi, '');
 
-      html = html.replace('</head>', `${metaTags}\n</head>`);
+      html = html.replace('</head>', `${metaTags}\n  ${scriptInjection}\n</head>`);
     }
 
     res.setHeader('Content-Type', 'text/html');
@@ -207,7 +226,7 @@ export default async function handler(req, res) {
     return res.status(200).send(html);
 
   } catch (error) {
-    console.error('Error generating dynamic OG tags:', error);
+    console.error('Error in profile handler:', error);
     try {
       const htmlPath = path.join(process.cwd(), 'profile.html');
       const html = fs.readFileSync(htmlPath, 'utf8');

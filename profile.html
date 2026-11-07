@@ -505,6 +505,23 @@
     }
 
     async function main() {
+      // 1. Instant render if pre-injected by serverless Redis cache
+      if (window.__INITIAL_ERROR__) {
+        renderError(window.__INITIAL_ERROR__.code, window.__INITIAL_ERROR__.msg);
+        return;
+      }
+
+      if (window.__INITIAL_PROFILE__) {
+        const data = window.__INITIAL_PROFILE__;
+        if (data.isPublic === false) {
+          renderError('Private', 'This profile has been set to private by its owner.');
+          return;
+        }
+        render(data);
+        return;
+      }
+
+      // 2. Fallback to client-side Firestore if page opened directly
       const params = new URLSearchParams(window.location.search);
       const pathMatch = window.location.pathname.match(/^\/u\/([^/]+)/);
       const handle = (pathMatch && pathMatch[1]) || params.get('handle') || params.get('u') || '';
