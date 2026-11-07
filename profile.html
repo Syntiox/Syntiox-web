@@ -145,7 +145,8 @@
     function render(userData) {
       const {
         displayName, username, bio, photoURL,
-        links = [], appearance = {}, coins, social = {}, verified = false
+        links = [], appearance = {}, coins, social = {}, verified = false,
+        isAdmin = false
       } = userData;
 
       const engine = appearance.layoutEngine || (appearance.template === 'minimal' ? 'executive' : 'bento');
@@ -214,6 +215,10 @@
 
       const verifiedBadge = verified
         ? `<span class="verified-badge" title="Verified"><i class="fa-solid fa-check"></i></span>`
+        : '';
+
+      const staffBadge = isAdmin
+        ? `<span class="staff-badge" title="Syntiox Staff"><i class="fa-solid fa-shield-halved"></i> Staff</span>`
         : '';
 
       const handleBtn = username
@@ -306,9 +311,11 @@
             ${editBtn}
             <div class="bento-card bento-hero anim-item">
               <div class="bento-hero-top">
-                <img class="bento-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+                ${isAdmin
+                  ? `<div class="admin-avatar-wrap"><div class="admin-ring"></div><img class="bento-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" /></div>`
+                  : `<img class="bento-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />`}
                 <div class="bento-hero-info">
-                  <h1>${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+                  <h1>${esc(displayName || username || 'User')}${verifiedBadge}${staffBadge}</h1>
                   ${handleBtn}
                 </div>
               </div>
@@ -349,9 +356,11 @@
             ${editBtn}
             <div class="editorial-header anim-item">
               <div class="editorial-top-row">
-                <img class="editorial-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+                ${isAdmin
+                  ? `<div class="admin-avatar-wrap"><div class="admin-ring"></div><img class="editorial-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" /></div>`
+                  : `<img class="editorial-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />`}
                 <div>
-                  <h1 class="editorial-name">${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+                  <h1 class="editorial-name">${esc(displayName || username || 'User')}${verifiedBadge}${staffBadge}</h1>
                   ${handleBtn}
                 </div>
               </div>
@@ -399,11 +408,12 @@
             <div class="dev-header-card anim-item">
               <div class="dev-top-bar">
                 <div class="dev-identity">
-                  <div class="dev-avatar-wrap">
+                  <div class="dev-avatar-wrap ${isAdmin ? 'admin-avatar-wrap' : ''}">
+                    ${isAdmin ? '<div class="admin-ring"></div>' : ''}
                     <img class="dev-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
                   </div>
                   <div class="dev-info">
-                    <h1>${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+                    <h1>${esc(displayName || username || 'User')}${verifiedBadge}${staffBadge}</h1>
                     ${handleBtn}
                   </div>
                 </div>
@@ -445,9 +455,11 @@
         contentHtml = `
           <div class="exec-container">
             ${editBtn}
-            <img class="exec-avatar anim-item" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />
+            ${isAdmin
+              ? `<div class="admin-avatar-wrap anim-item"><div class="admin-ring"></div><img class="exec-avatar" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" /></div>`
+              : `<img class="exec-avatar anim-item" src="${avatarSrc}" alt="${esc(displayName||username)}" referrerpolicy="no-referrer" />`}
             <div class="anim-item">
-              <h1 class="exec-name">${esc(displayName || username || 'User')}${verifiedBadge}</h1>
+              <h1 class="exec-name">${esc(displayName || username || 'User')}${verifiedBadge}${staffBadge}</h1>
               ${handleBtn}
             </div>
             ${bio ? `<p class="exec-bio anim-item anim-d1">${esc(bio)}</p>` : ''}
@@ -562,7 +574,15 @@
           return;
         }
 
-        render({ ...userData, uid: snap.id });
+        let isAdmin = false;
+        try {
+          const adminSnap = await db.collection('admin').doc(uData.uid).get();
+          if (adminSnap.exists && adminSnap.data()?.isAdmin === true) {
+            isAdmin = true;
+          }
+        } catch (_) {}
+
+        render({ ...userData, uid: snap.id, isAdmin });
       } catch (err) {
         console.error('[Profile]', err);
         renderError('Error', 'Unable to load profile right now. Please try again shortly.');

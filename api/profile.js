@@ -177,6 +177,14 @@ export default async function handler(req, res) {
         userData = parseFirestoreFields(userDoc.fields);
         userData.uid = uid;
 
+        // Check admin collection
+        try {
+          const adminDoc = await fetchHttpsJson(`https://firestore.googleapis.com/v1/projects/syntiox-services/databases/(default)/documents/admin/${uid}`);
+          if (adminDoc && adminDoc.fields && adminDoc.fields.isAdmin && adminDoc.fields.isAdmin.booleanValue === true) {
+            userData.isAdmin = true;
+          }
+        } catch (_) {}
+
         // Store Full Profile in Redis (30-day sliding TTL)
         await setCachedProfile(cacheKey, userData);
       }

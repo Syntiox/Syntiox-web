@@ -172,6 +172,68 @@ body[data-mode="dark"] .verified-badge {
   color: #09090b;
 }
 
+/* Staff Badge & Admin Avatar Ring */
+.staff-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4.5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 2.5px 8.5px;
+  border-radius: 999px;
+  background: rgba(var(--pg-accent-rgb), 0.12);
+  color: var(--pg-accent);
+  border: 1px solid rgba(var(--pg-accent-rgb), 0.28);
+  line-height: 1.2;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.staff-badge i {
+  font-size: 9.5px;
+}
+
+.admin-avatar-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.admin-avatar-wrap .admin-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--pg-accent);
+  box-shadow: 0 0 14px rgba(var(--pg-accent-rgb), 0.45);
+  animation: adminPulseGlow 3s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes adminPulseGlow {
+  0% {
+    border-color: var(--pg-accent);
+    box-shadow: 0 0 8px rgba(var(--pg-accent-rgb), 0.3);
+  }
+  100% {
+    border-color: var(--pg-accent);
+    box-shadow: 0 0 18px rgba(var(--pg-accent-rgb), 0.65);
+  }
+}
+
+body[data-animations="off"] .admin-avatar-wrap .admin-ring {
+  animation: none;
+  box-shadow: 0 0 10px rgba(var(--pg-accent-rgb), 0.35);
+}
+
+.bento-hero .admin-avatar-wrap { border-radius: 26px; }
+.editorial-top-row .admin-avatar-wrap { border-radius: 50%; }
+.dev-avatar-wrap.admin-avatar-wrap { border-radius: 20px; }
+.exec-container .admin-avatar-wrap {
+  border-radius: 50%;
+  align-self: center;
+}
+
 .handle-copy {
   display: inline-flex;
   align-items: center;
