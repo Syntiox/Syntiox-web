@@ -4,8 +4,8 @@ import https from 'https';
 
 const REDIS_URL = process.env.REDIS_REST_URL;
 const REDIS_TOKEN = process.env.REDIS_REST_TOKEN;
-const RATE_LIMIT_WINDOW_SECS = 60; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 60; // Max 60 requests per minute per IP
+const RATE_LIMIT_WINDOW_SECS = 120; // 2 minutes
+const MAX_REQUESTS_PER_WINDOW = 20; // Max 20 requests per 2 minutes per IP
 const PROFILE_CACHE_TTL_SECS = 30 * 24 * 60 * 60; // 30 days sliding expiration
 
 // Distributed rate limiting via Upstash Redis pipeline
@@ -86,6 +86,7 @@ export default async function handler(req, res) {
 
   // Atomic Redis Rate Limit
   if (await isRateLimited(ip)) {
+    res.setHeader('Retry-After', '120');
     return res.status(429).send("Too Many Requests - Please try again later");
   }
 

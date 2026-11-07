@@ -21,779 +21,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --pg-accent: #0071e3;
-      --pg-accent-rgb: 0, 113, 227;
-      --pg-bg: #fbfbf9;
-      --pg-card-bg: #ffffff;
-      --pg-surface-subtle: #f4f4f1;
-      --pg-card-border: #e6e6e1;
-      --pg-text: #111315;
-      --pg-text-muted: #64686e;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
-      --font-serif: 'Newsreader', Georgia, serif;
-    }
-
-    body[data-mode="dark"] {
-      --pg-bg: #09090b;
-      --pg-card-bg: #121215;
-      --pg-surface-subtle: #1a1a1f;
-      --pg-card-border: #242429;
-      --pg-text: #f4f4f6;
-      --pg-text-muted: #9ca3af;
-    }
-
-    body {
-      font-family: var(--font-sans);
-      background-color: var(--pg-bg);
-      color: var(--pg-text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.5;
-    }
-
-    a { color: inherit; text-decoration: none; }
-
-    #root {
-      width: 100%;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-    }
-
-    /* Animations control */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    body[data-animations="on"] .anim-item {
-      animation: fadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-    body[data-animations="on"] .anim-d1 { animation-delay: 0.05s; }
-    body[data-animations="on"] .anim-d2 { animation-delay: 0.1s; }
-    body[data-animations="on"] .anim-d3 { animation-delay: 0.15s; }
-
-    body[data-animations="off"] *,
-    body[data-animations="off"] *::before,
-    body[data-animations="off"] *::after {
-      animation: none !important;
-      transition: none !important;
-      transform: none !important;
-    }
-
-    /* Clean Skeleton Loader (No spinning wheel) */
-    @keyframes shimmer {
-      0% { opacity: 0.45; }
-      50% { opacity: 0.9; }
-      100% { opacity: 0.45; }
-    }
-    .skeleton-shell {
-      width: 100%;
-      max-width: 620px;
-      padding: 56px 20px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      animation: shimmer 1.6s ease-in-out infinite;
-    }
-    .sk-card {
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      border-radius: 22px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .sk-row {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .sk-avatar {
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
-      background: var(--pg-surface-subtle);
-      flex-shrink: 0;
-    }
-    .sk-lines {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .sk-line {
-      height: 12px;
-      border-radius: 6px;
-      background: var(--pg-surface-subtle);
-    }
-    .sk-w40 { width: 42%; height: 16px; }
-    .sk-w25 { width: 26%; }
-    .sk-w80 { width: 82%; }
-    .sk-w60 { width: 60%; }
-    .sk-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-    }
-    .sk-stat {
-      height: 78px;
-      border-radius: 18px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-    }
-    .sk-link {
-      height: 60px;
-      border-radius: 16px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-    }
-
-    /* Common Elements */
-    .verified-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 17px;
-      height: 17px;
-      border-radius: 50%;
-      background: var(--pg-accent);
-      color: #fff;
-      font-size: 9px;
-      margin-left: 6px;
-      vertical-align: middle;
-    }
-    body[data-mode="dark"] .verified-badge {
-      color: #09090b;
-    }
-
-    .handle-copy {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      color: var(--pg-text-muted);
-      transition: color 0.15s ease;
-      background: none;
-      border: none;
-      font: inherit;
-      padding: 0;
-    }
-    .handle-copy:hover {
-      color: var(--pg-accent);
-    }
-    .handle-copy i {
-      font-size: 11px;
-      opacity: 0.65;
-    }
-
-    .owner-bar {
-      width: 100%;
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 4px;
-    }
-    .owner-edit-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--pg-text-muted);
-      padding: 5px 11px;
-      border-radius: 999px;
-      border: 1px solid var(--pg-card-border);
-      background: var(--pg-card-bg);
-      transition: border-color 0.15s ease, color 0.15s ease;
-    }
-    .owner-edit-link:hover {
-      color: var(--pg-text);
-      border-color: var(--pg-accent);
-    }
-
-    /* Unified Social Icons */
-    .social-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .social-ic {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 34px;
-      border-radius: 10px;
-      background: var(--pg-surface-subtle);
-      border: 1px solid var(--pg-card-border);
-      color: var(--pg-text-muted);
-      font-size: 14px;
-      transition: all 0.18s ease;
-    }
-    .social-ic:hover {
-      color: var(--pg-accent);
-      border-color: rgba(var(--pg-accent-rgb), 0.45);
-      background: rgba(var(--pg-accent-rgb), 0.06);
-      transform: translateY(-1px);
-    }
-
-    /* Link Brand Icon Box */
-    .link-ic-box {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: var(--pg-surface-subtle);
-      border: 1px solid var(--pg-card-border);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--pg-text);
-      font-size: 15px;
-      flex-shrink: 0;
-      transition: border-color 0.18s ease, color 0.18s ease;
-    }
-
-    /* Syntiox Minimal Footer */
-    .syntiox-footer {
-      margin-top: auto;
-      padding: 36px 16px 28px;
-      text-align: center;
-    }
-    .syntiox-footer a {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--pg-text-muted);
-      opacity: 0.75;
-      transition: opacity 0.15s ease, color 0.15s ease;
-    }
-    .syntiox-footer a:hover {
-      opacity: 1;
-      color: var(--pg-text);
-    }
-    .syntiox-footer img {
-      width: 15px;
-      height: 15px;
-      object-fit: contain;
-      border-radius: 3px;
-    }
-
-    /* 1. BENTO GRID ENGINE */
-    .bento-container {
-      width: 100%;
-      max-width: 640px;
-      padding: 44px 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .bento-card {
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      border-radius: 22px;
-      padding: 24px;
-    }
-    .bento-hero {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .bento-hero-top {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .bento-avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 24px;
-      object-fit: cover;
-      border: 1px solid var(--pg-card-border);
-      flex-shrink: 0;
-    }
-    .bento-hero-info h1 {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 4px;
-    }
-    .bento-bio {
-      font-size: 14px;
-      color: var(--pg-text-muted);
-      line-height: 1.65;
-    }
-    .bento-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-    }
-    .bento-stat {
-      padding: 18px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .bento-stat-lbl {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--pg-text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .bento-stat-val {
-      font-size: 23px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      color: var(--pg-accent);
-      font-family: var(--font-mono);
-    }
-    .bento-links-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .bento-link {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 18px;
-      border-radius: 18px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      transition: border-color 0.18s ease, transform 0.18s ease;
-    }
-    .bento-link:hover {
-      border-color: var(--pg-accent);
-      transform: translateY(-1px);
-    }
-    .bento-link:hover .link-ic-box {
-      border-color: rgba(var(--pg-accent-rgb), 0.4);
-      color: var(--pg-accent);
-    }
-    .bento-link-left {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      min-width: 0;
-    }
-    .bento-link-meta {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-    .bento-link-title {
-      font-size: 14.5px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .bento-link-host {
-      font-size: 12px;
-      color: var(--pg-text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .bento-link-arrow {
-      font-size: 12px;
-      color: var(--pg-text-muted);
-      transition: transform 0.18s ease, color 0.18s ease;
-      flex-shrink: 0;
-      margin-left: 12px;
-    }
-    .bento-link:hover .bento-link-arrow {
-      transform: translate(2px, -2px);
-      color: var(--pg-accent);
-    }
-
-    /* 2. EDITORIAL DOCUMENT ENGINE */
-    .editorial-container {
-      width: 100%;
-      max-width: 600px;
-      padding: 56px 20px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-    .editorial-header {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-    .editorial-top-row {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .editorial-avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid var(--pg-card-border);
-      flex-shrink: 0;
-    }
-    .editorial-name {
-      font-family: var(--font-serif);
-      font-size: 34px;
-      font-weight: 500;
-      letter-spacing: -0.02em;
-      line-height: 1.15;
-      margin-bottom: 4px;
-    }
-    .editorial-bio {
-      font-size: 15.5px;
-      line-height: 1.7;
-      color: var(--pg-text-muted);
-    }
-    .editorial-divider {
-      width: 100%;
-      height: 1px;
-      background: var(--pg-card-border);
-    }
-    .editorial-stats-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 24px;
-      padding: 14px 0;
-      border-top: 1px solid var(--pg-card-border);
-      border-bottom: 1px solid var(--pg-card-border);
-    }
-    .editorial-stat-item {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .editorial-stat-lbl {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--pg-text-muted);
-    }
-    .editorial-stat-val {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--pg-text);
-    }
-    .editorial-section-title {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--pg-text-muted);
-      margin-bottom: 8px;
-    }
-    .editorial-links-list {
-      display: flex;
-      flex-direction: column;
-      border-top: 1px solid var(--pg-card-border);
-    }
-    .editorial-link-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 15px 6px;
-      border-bottom: 1px solid var(--pg-card-border);
-      transition: padding-left 0.18s ease, color 0.18s ease;
-    }
-    .editorial-link-row:hover {
-      padding-left: 12px;
-      color: var(--pg-accent);
-    }
-    .editorial-link-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-    }
-    .editorial-num {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--pg-text-muted);
-      width: 20px;
-      flex-shrink: 0;
-    }
-    .editorial-link-ic {
-      font-size: 14px;
-      color: var(--pg-text-muted);
-      width: 18px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .editorial-link-row:hover .editorial-link-ic {
-      color: var(--pg-accent);
-    }
-    .editorial-link-title {
-      font-size: 15.5px;
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* 3. DEVELOPER SPEC SHEET ENGINE (No Banner) */
-    .dev-container {
-      width: 100%;
-      max-width: 650px;
-      padding: 44px 16px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .dev-header-card {
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      border-radius: 18px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .dev-top-bar {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .dev-identity {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-    }
-    .dev-avatar-wrap {
-      position: relative;
-      flex-shrink: 0;
-    }
-    .dev-avatar {
-      width: 88px;
-      height: 88px;
-      border-radius: 18px;
-      object-fit: cover;
-      border: 1px solid var(--pg-card-border);
-      display: block;
-    }
-    .dev-info h1 {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-    .dev-bio {
-      font-size: 13.5px;
-      color: var(--pg-text-muted);
-      line-height: 1.65;
-    }
-    .dev-telemetry {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-    }
-    .dev-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 10px;
-      border-radius: 8px;
-      background: var(--pg-surface-subtle);
-      color: var(--pg-text);
-      border: 1px solid var(--pg-card-border);
-    }
-    .dev-badge span.lbl {
-      color: var(--pg-text-muted);
-    }
-    .dev-repos-title {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--pg-text-muted);
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      margin-top: 4px;
-    }
-    .dev-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .dev-repo-card {
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      border-radius: 14px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
-      transition: border-color 0.18s ease, transform 0.18s ease;
-    }
-    .dev-repo-card:hover {
-      border-color: var(--pg-accent);
-      transform: translateY(-1px);
-    }
-    .dev-repo-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .dev-repo-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-    .dev-repo-title {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .dev-repo-host {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--pg-text-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* 4. EXECUTIVE MINIMALIST ENGINE */
-    .exec-container {
-      width: 100%;
-      max-width: 480px;
-      padding: 56px 16px 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 20px;
-    }
-    .exec-avatar {
-      width: 108px;
-      height: 108px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 1px solid var(--pg-card-border);
-    }
-    .exec-name {
-      font-size: 25px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      margin-bottom: 4px;
-    }
-    .exec-bio {
-      font-size: 14px;
-      color: var(--pg-text-muted);
-      line-height: 1.65;
-      max-width: 400px;
-    }
-    .exec-stats-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-    .exec-stat-pill {
-      font-size: 11.5px;
-      font-weight: 500;
-      color: var(--pg-text-muted);
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      padding: 5px 12px;
-      border-radius: 999px;
-    }
-    .exec-stat-pill strong {
-      color: var(--pg-text);
-      font-weight: 600;
-      margin-left: 3px;
-    }
-    .exec-links-stack {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      margin-top: 4px;
-    }
-    .exec-link-strip {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: var(--pg-card-bg);
-      border: 1px solid var(--pg-card-border);
-      transition: border-color 0.18s ease, transform 0.18s ease;
-    }
-    .exec-link-strip:hover {
-      border-color: var(--pg-accent);
-      transform: translateY(-1px);
-    }
-    .exec-link-left {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      min-width: 0;
-    }
-    .exec-link-ic {
-      font-size: 14px;
-      color: var(--pg-text-muted);
-      width: 18px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .exec-link-strip:hover .exec-link-ic {
-      color: var(--pg-accent);
-    }
-    .exec-link-title {
-      font-size: 14px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .exec-link-arrow {
-      color: var(--pg-text-muted);
-      font-size: 12px;
-      transition: transform 0.18s ease, color 0.18s ease;
-      flex-shrink: 0;
-      margin-left: 10px;
-    }
-    .exec-link-strip:hover .exec-link-arrow {
-      transform: translateX(3px);
-      color: var(--pg-accent);
-    }
-
-    @media (max-width: 520px) {
-      .bento-stats-grid { grid-template-columns: 1fr; }
-      .dev-cards-grid { grid-template-columns: 1fr; }
-      .sk-grid { grid-template-columns: 1fr; }
-      .dev-top-bar { flex-direction: column; }
-    }
-  </style>
+  <link rel="stylesheet" href="/assets/css/profile.css" />
 </head>
 <body data-engine="bento" data-mode="light" data-animations="on">
   <div id="root">
@@ -858,6 +86,13 @@
       { m:/medium\.com/i,               i:'fa-brands fa-medium' },
     ];
 
+    function formatUrl(url) {
+      if (!url) return '';
+      url = String(url).trim();
+      if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(url)) return url;
+      return 'https://' + url;
+    }
+
     function detectIcon(url) {
       for (const e of ICON_MAP) {
         if (e.m.test(url)) return e.i;
@@ -867,21 +102,27 @@
 
     function getHostname(url) {
       try {
-        return new URL(url).hostname.replace(/^www\./, '');
+        const u = formatUrl(url);
+        return new URL(u).hostname.replace(/^www\./, '');
       } catch {
         return '';
       }
     }
 
     function hexToRgb(hex) {
-      hex = hex.replace('#','');
-      if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
-      const n = parseInt(hex,16);
-      return `${(n>>16)&255}, ${(n>>8)&255}, ${n&255}`;
+      try {
+        hex = String(hex || '').replace('#', '').trim();
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        if (!/^[0-9a-fA-F]{6}$/.test(hex)) return '0, 113, 227';
+        const n = parseInt(hex, 16);
+        return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+      } catch {
+        return '0, 113, 227';
+      }
     }
 
     function defaultAvatar(name, accent) {
-      const c = (name||'?')[0].toUpperCase();
+      const c = (name || '?')[0].toUpperCase();
       const bg = accent || '#0f172a';
       return `data:image/svg+xml,${encodeURIComponent(
         `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" fill="${bg}"/><text x="48" y="62" text-anchor="middle" font-size="38" font-family="Inter,sans-serif" fill="#ffffff" font-weight="600">${c}</text></svg>`
@@ -889,7 +130,7 @@
     }
 
     function esc(s) {
-      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
     function formatShortCurrency(value) {
@@ -938,7 +179,8 @@
       }
 
       const showPhoto = appearance.showMetadataPhoto !== false;
-      const userPhoto = (showPhoto && photoURL) || '';
+      const rawPhoto = photoURL || userData.avatar || '';
+      const userPhoto = (showPhoto && rawPhoto) || '';
 
       updateMetaTag('property', 'og:title', `${displayName || username} | Syntiox`);
       updateMetaTag('property', 'og:description', bio || `View ${displayName || username}'s profile on Syntiox.`);
@@ -983,10 +225,10 @@
       const showViews = appearance.showViewCount !== false;
       const showIcons = appearance.linkShowIcon !== false;
 
-      const walletVal = userData.wallet_balance ?? 0;
-      const coinsVal = coins ?? 0;
-      const viewsVal = userData.profileViews ?? 0;
-      const avatarSrc = photoURL || defaultAvatar(displayName || username, rawAccent);
+      const walletVal = userData.wallet_balance ?? userData.walletBalance ?? userData.wallet ?? 0;
+      const coinsVal = coins ?? userData.apiCoins ?? 0;
+      const viewsVal = userData.profileViews ?? userData.views ?? 0;
+      const avatarSrc = rawPhoto || defaultAvatar(displayName || username, rawAccent);
 
       const SOCIAL_DEFS = [
         { id:'github',   label:'GitHub',      icon:'fa-brands fa-github',    prefix:'https://github.com/' },
@@ -998,13 +240,20 @@
         { id:'email',    label:'Email',       icon:'fa-solid fa-envelope',   prefix:'mailto:' },
       ];
 
-      const socialHtml = SOCIAL_DEFS.filter(s => social[s.id]).map(s => {
-        let val = social[s.id];
-        if (s.id === 'linkedin' && val.startsWith('in/')) val = val.slice(3);
-        const rawUrl = `${s.prefix}${val}`;
+      const socialHtml = SOCIAL_DEFS.filter(s => social && social[s.id]).map(s => {
+        let val = String(social[s.id]).trim();
+        if (!val) return '';
+        let rawUrl;
+        if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(val)) {
+          rawUrl = val;
+        } else {
+          if (s.id === 'linkedin' && val.startsWith('in/')) val = val.slice(3);
+          if (val.startsWith('@') && s.id !== 'youtube') val = val.slice(1);
+          rawUrl = `${s.prefix}${val}`;
+        }
         const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=Social%3A%20${encodeURIComponent(s.label||s.id)}&url=${encodeURIComponent(rawUrl)}`;
         return `<a class="social-ic" href="${esc(redirectUrl)}" target="_blank" rel="noopener" title="${esc(s.label||s.id)}"><i class="${s.icon}"></i></a>`;
-      }).join('');
+      }).filter(Boolean).join('');
 
       let contentHtml = '';
 
@@ -1034,9 +283,11 @@
         }
 
         const linksBento = links.map(link => {
-          const icon = detectIcon(link.url);
-          const host = getHostname(link.url);
-          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
+          if (!link || !link.url) return '';
+          const targetUrl = formatUrl(link.url);
+          const icon = (link.icon && link.icon !== 'auto') ? link.icon : detectIcon(targetUrl);
+          const host = getHostname(targetUrl);
+          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(targetUrl)}`;
           return `
             <a class="bento-link" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
               <div class="bento-link-left">
@@ -1048,7 +299,7 @@
               </div>
               <i class="fa-solid fa-arrow-up-right-from-square bento-link-arrow"></i>
             </a>`;
-        }).join('');
+        }).filter(Boolean).join('');
 
         contentHtml = `
           <div class="bento-container">
@@ -1077,8 +328,10 @@
         if (showViews) editorialStats.push(`<div class="editorial-stat-item"><span class="editorial-stat-lbl">Views</span><span class="editorial-stat-val">${formatShortCurrency(viewsVal)}</span></div>`);
 
         const linksEditorial = links.map((link, idx) => {
-          const icon = detectIcon(link.url);
-          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
+          if (!link || !link.url) return '';
+          const targetUrl = formatUrl(link.url);
+          const icon = (link.icon && link.icon !== 'auto') ? link.icon : detectIcon(targetUrl);
+          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(targetUrl)}`;
           const num = String(idx + 1).padStart(2, '0');
           return `
             <a class="editorial-link-row" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
@@ -1089,7 +342,7 @@
               </div>
               <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;color:var(--pg-text-muted);"></i>
             </a>`;
-        }).join('');
+        }).filter(Boolean).join('');
 
         contentHtml = `
           <div class="editorial-container">
@@ -1122,9 +375,11 @@
         if (showViews) devBadges.push(`<span class="dev-badge"><span class="lbl">VIEWS</span> ${formatShortCurrency(viewsVal)}</span>`);
 
         const linksDev = links.map(link => {
-          const icon = detectIcon(link.url);
-          const host = getHostname(link.url) || 'endpoint';
-          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
+          if (!link || !link.url) return '';
+          const targetUrl = formatUrl(link.url);
+          const icon = (link.icon && link.icon !== 'auto') ? link.icon : detectIcon(targetUrl);
+          const host = getHostname(targetUrl) || 'endpoint';
+          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(targetUrl)}`;
           return `
             <a class="dev-repo-card" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
               <div class="dev-repo-top">
@@ -1136,7 +391,7 @@
               </div>
               <span class="dev-repo-host">${esc(host)}</span>
             </a>`;
-        }).join('');
+        }).filter(Boolean).join('');
 
         contentHtml = `
           <div class="dev-container">
@@ -1173,8 +428,10 @@
         if (showViews) execStats.push(`<span class="exec-stat-pill">Views <strong>${formatShortCurrency(viewsVal)}</strong></span>`);
 
         const linksExec = links.map(link => {
-          const icon = detectIcon(link.url);
-          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(link.url)}`;
+          if (!link || !link.url) return '';
+          const targetUrl = formatUrl(link.url);
+          const icon = (link.icon && link.icon !== 'auto') ? link.icon : detectIcon(targetUrl);
+          const redirectUrl = `https://account.syntiox.top/api/redirect?uid=${userData.uid||''}&key=${encodeURIComponent(link.title||'Link')}&url=${encodeURIComponent(targetUrl)}`;
           return `
             <a class="exec-link-strip" href="${esc(redirectUrl)}" target="_blank" rel="noopener noreferrer">
               <div class="exec-link-left">
@@ -1183,7 +440,7 @@
               </div>
               <i class="fa-solid fa-chevron-right exec-link-arrow"></i>
             </a>`;
-        }).join('');
+        }).filter(Boolean).join('');
 
         contentHtml = `
           <div class="exec-container">
@@ -1209,17 +466,33 @@
           </a>
         </div>`;
 
-      document.getElementById('btn-copy-handle')?.addEventListener('click', () => {
-        navigator.clipboard.writeText(pageUrl).then(() => {
-          const ic = document.getElementById('copy-ic');
-          if (!ic) return;
-          ic.className = 'fa-solid fa-check';
-          setTimeout(() => { ic.className = 'fa-regular fa-copy'; }, 1800);
-        }).catch(() => {});
-      });
+      const copyBtn = document.getElementById('btn-copy-handle');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          function markCopied() {
+            const ic = document.getElementById('copy-ic');
+            if (!ic) return;
+            ic.className = 'fa-solid fa-check';
+            setTimeout(() => { ic.className = 'fa-regular fa-copy'; }, 1800);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(pageUrl).then(markCopied).catch(() => {});
+          } else {
+            const ta = document.createElement('textarea');
+            ta.value = pageUrl;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); markCopied(); } catch {}
+            document.body.removeChild(ta);
+          }
+        });
+      }
     }
 
     function renderError(code, msg) {
+      document.title = `${code} | Syntiox`;
       document.getElementById('root').innerHTML = `
         <div style="min-height:75vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;">
           <p style="font-family:var(--font-mono);font-size:12px;color:var(--pg-text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">${esc(code)}</p>
@@ -1236,19 +509,44 @@
       const pathMatch = window.location.pathname.match(/^\/u\/([^/]+)/);
       const handle = (pathMatch && pathMatch[1]) || params.get('handle') || params.get('u') || '';
 
-      if (!handle) { renderError('404', 'No username was specified in the URL.'); return; }
+      if (!handle) {
+        renderError('404', 'No username was specified in the URL.');
+        return;
+      }
 
       try {
         const db = firebase.firestore();
-        const uSnap = await db.collection('usernames').doc(handle.toLowerCase()).get();
-        if (!uSnap.exists) { renderError('404', `@${esc(handle)} is not registered on Syntiox.`); return; }
+        const uSnap = await db.collection('usernames').doc(handle.toLowerCase().trim()).get();
+        if (!uSnap.exists) {
+          renderError('404', `@${esc(handle)} is not registered on Syntiox.`);
+          return;
+        }
 
-        const snap = await db.collection('users').doc(uSnap.data().uid).get();
-        if (!snap.exists) { renderError('404', 'This profile could not be found.'); return; }
-        if (snap.data().isPublic === false) { renderError('Private', 'This profile has been set to private by its owner.'); return; }
+        const uData = uSnap.data();
+        if (!uData || !uData.uid) {
+          renderError('404', 'This profile could not be found.');
+          return;
+        }
 
-        render({ ...snap.data(), uid: snap.id });
-      } catch(err) {
+        const snap = await db.collection('users').doc(uData.uid).get();
+        if (!snap.exists) {
+          renderError('404', 'This profile could not be found.');
+          return;
+        }
+
+        const userData = snap.data();
+        if (!userData) {
+          renderError('404', 'This profile could not be found.');
+          return;
+        }
+
+        if (userData.isPublic === false) {
+          renderError('Private', 'This profile has been set to private by its owner.');
+          return;
+        }
+
+        render({ ...userData, uid: snap.id });
+      } catch (err) {
         console.error('[Profile]', err);
         renderError('Error', 'Unable to load profile right now. Please try again shortly.');
       }
