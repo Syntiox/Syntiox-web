@@ -182,7 +182,35 @@ export default async function handler(req, res) {
       }
     }
 
-    // 3. Inject Full Profile Data & Dynamic Meta Tags
+    // 3. Handle Private Profile (Prevent leaking private data in page source or meta tags)
+    if (userData && userData.isPublic === false) {
+      const errorState = { code: 'Private', msg: 'This profile has been set to private by its owner.' };
+      const scriptInjection = `<script>window.__INITIAL_ERROR__ = ${JSON.stringify(errorState).replace(/</g, '\\u003c')};</script>`;
+      const metaTags = `
+  <title>Private Profile | Syntiox</title>
+  <meta name="description" content="This profile has been set to private by its owner.">
+  <meta property="og:type" content="profile">
+  <meta property="og:url" content="https://syntiox.top/u/${cleanHandle}">
+  <meta property="og:title" content="Private Profile | Syntiox">
+  <meta property="og:description" content="This profile has been set to private by its owner.">
+  <meta property="og:image" content="https://syntiox.top/assets/image/logo.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://syntiox.top/u/${cleanHandle}">
+  <meta name="twitter:title" content="Private Profile | Syntiox">
+  <meta name="twitter:description" content="This profile has been set to private by its owner.">
+  <meta name="twitter:image" content="https://syntiox.top/assets/image/logo.png">
+`;
+      html = html.replace(/<title>.*?<\/title>/gi, '');
+      html = html.replace(/<meta\\s+name=["']description["'][^>]*>/gi, '');
+      html = html.replace(/<meta\\s+(?:property|name)=["'](?:og|twitter):[^"']*["'][^>]*>/gi, '');
+      html = html.replace('</head>', `${metaTags}\n  ${scriptInjection}\n</head>`);
+
+      res.setHeader('Content-Type', 'text/html');
+      res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate');
+      return res.status(200).send(html);
+    }
+
+    // 4. Inject Full Profile Data & Dynamic Meta Tags
     if (userData) {
       const name = userData.displayName || userData.name || userData.username || cleanHandle;
       const bio = userData.bio || `View ${name}'s profile on Syntiox.`;
